@@ -42,16 +42,18 @@ namespace WPFDemo
 
             if (string.IsNullOrWhiteSpace(_majorsContext.AppTitleImagePath))
             {
-                var textBlock = new TextBlock();
-                textBlock.Text = _majorsContext.AppTitle;
+                var textBlock = new TextBlock
+                {
+                    Text = _majorsContext.AppTitle
+                };
                 TitleViewBox.Child = textBlock;
             }
             else
             {
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(_majorsContext.AppTitleImagePath));
-                ImageBrush ib = new ImageBrush();
-                ib.ImageSource = image.Source;
+                var image = new Image
+                {
+                    Source = new BitmapImage(new Uri(_majorsContext.AppTitleImagePath))
+                };
                 TitleViewBox.Child = image;
             }
 
@@ -59,6 +61,19 @@ namespace WPFDemo
             {
                 this.WindowTitle = _majorsContext.AppTitle;
             }
+        }
+
+        private void MajorButton_Click(object sender, RoutedEventArgs e)
+        {
+            var majorContext = (sender as Button)?.Tag as MajorContext;
+            var navigationService = this.NavigationService;
+            navigationService?.Navigate(new MajorPage(majorContext, _appConfig));
+        }
+
+        private void ToolButton_Click(object sender, RoutedEventArgs e)
+        {
+            var path = (sender as Button)?.Tag;
+            if (path != null) FolderUtility.ExploreFolder(path.ToString());
         }
 
         private void PrepareGrid(System.Windows.Controls.Primitives.UniformGrid majorsGrid, IDictionary<string, FolderInfo> infos, bool isMajorRequest)
@@ -102,18 +117,6 @@ namespace WPFDemo
                     useColumnIndex = 0;
                 }
             }
-        }
-
-        private void MajorButton_Click(object sender, RoutedEventArgs e)
-        {
-            var majorContext = (sender as Button).Tag as MajorContext;
-            this.NavigationService.Navigate(new MajorPage(majorContext, _appConfig));
-        }
-
-        private void ToolButton_Click(object sender, RoutedEventArgs e)
-        {
-            var path = (sender as Button).Tag;
-            FolderUtility.ExploreFolder(path.ToString());
         }
     }
 }

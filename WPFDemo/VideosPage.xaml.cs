@@ -25,35 +25,40 @@ namespace WPFDemo
     {
         private readonly MajorVideoContext _majorVideoContext;
         private readonly AppConfig _appConfig;
-        private readonly ICommand _listViewItemCommand;
         private int _currentIndex = -1;
         private bool _played = false;
         private DispatcherTimer _timer = new DispatcherTimer();
         private int _progressState = 0;
-        private Button _videoControlButton;
-        private Image _playButtonImage;
-        private Image _pauseButtonImage;
+        private readonly Button _videoControlButton;
+        private readonly Image _playButtonImage;
+        private readonly Image _pauseButtonImage;
 
         public VideosPage(MajorVideoContext majorVideoContext, AppConfig appConfig)
         {
             _appConfig = appConfig;
             _majorVideoContext = majorVideoContext;
-            _listViewItemCommand = new ListViewItemCommand(this);
+            var listViewItemCommand = new ListViewItemCommand(this);
             InitializeComponent();
             foreach (var keyValuePair in _majorVideoContext.ToolInfos)
             {
                 var viewBox = new Viewbox();
                 var button = ButtonUtility.CreateButton(keyValuePair.Value.ImagePath, keyValuePair.Key);
+                button.Tag = keyValuePair.Value.Path;
+                button.Click += ToolsButton_Click;
                 viewBox.Child = button;
                 this.ToolPanel.Children.Add(viewBox);
             }
 
             if (!string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath))
             {
-                _playButtonImage = new Image();
-                _playButtonImage.Source = new BitmapImage(new Uri(_majorVideoContext.VideoStartButtonImagePath));
-                _pauseButtonImage = new Image();
-                _pauseButtonImage.Source = new BitmapImage(new Uri(_majorVideoContext.VideoPauseButtonImagePath));
+                _playButtonImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoStartButtonImagePath))
+                };
+                _pauseButtonImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoPauseButtonImagePath))
+                };
                 _videoControlButton = ButtonUtility.CreateButton(_playButtonImage, "Play");
             }
             else
@@ -61,17 +66,17 @@ namespace WPFDemo
                 _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", false);
             }
             _videoControlButton.Click += VideoPlayerControl_Click;
-            var buttonViewBox = new Viewbox();
-            buttonViewBox.Child = _videoControlButton;
+            var buttonViewBox = new Viewbox {Child = _videoControlButton};
             ButtonGrid.Children.Add(buttonViewBox);
 
             var fileIndex = 0;
             foreach (var oneFileName in _majorVideoContext.VideoFileNames)
             {;
-                var listViewItem = new ListViewItem();
-                listViewItem.Content = System.IO.Path.GetFileNameWithoutExtension(oneFileName);
-                listViewItem.Tag = fileIndex;
-                ControlDoubleClick.SetCommand(listViewItem, _listViewItemCommand);
+                var listViewItem = new ListViewItem
+                {
+                    Content = System.IO.Path.GetFileNameWithoutExtension(oneFileName), Tag = fileIndex
+                };
+                ControlDoubleClick.SetCommand(listViewItem, listViewItemCommand);
                 this.VideoFilesListView.Items.Add(listViewItem);
                 fileIndex++;
             }
@@ -105,9 +110,9 @@ namespace WPFDemo
             ChangeCurrentIndex(_currentIndex);
         }
 
-        private void OpenFolder(object sender, RoutedEventArgs e)
+        private void ToolsButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
+            if (!(sender is Button button)) return;
             var folderPath = button.Tag.ToString();
             FolderUtility.ExploreFolder(folderPath);
         }
@@ -198,8 +203,7 @@ namespace WPFDemo
 
             public void Execute(object parameter)
             {
-                var index = -1;
-                if (parameter == null || !int.TryParse(parameter.ToString(), out index))
+                if (parameter == null || !int.TryParse(parameter.ToString(), out var index))
                 {
                     return;
                 }

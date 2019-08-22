@@ -31,7 +31,7 @@
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Grid.Column="0" Background="Black">
-                    <MediaElement Stretch="Uniform" LoadedBehavior="Manual" Grid.Row="0" Name="VideoPlayer" >
+                    <MediaElement Stretch="Uniform" LoadedBehavior="Manual" Grid.Row="0" Name="VideoPlayer" ScrubbingEnabled="True" >
                     </MediaElement>
                 </Grid>
                 <Grid Grid.Row="1" VerticalAlignment="Center">

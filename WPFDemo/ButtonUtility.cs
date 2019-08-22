@@ -22,8 +22,7 @@ namespace WPFDemo
             }
             else
             {
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(imagePath));
+                var image = new Image {Source = new BitmapImage(new Uri(imagePath))};
                 return CreateButton(image, content);
             }
         }
@@ -33,8 +32,7 @@ namespace WPFDemo
             Button button;
             if (image == null)
             {
-                button = new Button();
-                button.Content = content;
+                button = new Button {Content = content};
                 if (useClip)
                 {
                     button.Width = 120;
@@ -44,8 +42,7 @@ namespace WPFDemo
             }
             else
             {
-                button = new ImageButton();
-                button.Content = image;
+                button = new ImageButton {Content = image};
             }
             button.Margin = new Thickness(10);
             button.HorizontalAlignment = HorizontalAlignment.Center;
@@ -58,12 +55,12 @@ namespace WPFDemo
 
         private static void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            (sender as Button).Margin = new Thickness(10);
+            ((Button) sender).Margin = new Thickness(10);
         }
 
         private static void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            (sender as Button).Margin = new Thickness(0);
+            ((Button) sender).Margin = new Thickness(0);
         }
     }
 }

@@ -15,10 +15,8 @@ namespace WPFDemo
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
-                Image image = new Image();
-                image.Source = new BitmapImage(new Uri(path));
-                ImageBrush ib = new ImageBrush();
-                ib.ImageSource = image.Source;
+                var image = new Image {Source = new BitmapImage(new Uri(path))};
+                var ib = new ImageBrush {ImageSource = image.Source};
                 majorsGrid.Background = ib;
             }
         }
