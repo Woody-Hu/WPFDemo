@@ -35,8 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -55,16 +59,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ButtonUtility.cs" />
+    <Compile Include="ControlDoubleClick.cs" />
+    <Compile Include="FolderInfo.cs" />
     <Compile Include="FolderUtility.cs" />
-    <Compile Include="MajorContextBuilder.cs" />
+    <Compile Include="FunctionKind.cs" />
+    <Compile Include="GridUtility.cs" />
+    <Compile Include="ImageButton.cs" />
     <Compile Include="MajorPage.xaml.cs">
       <DependentUpon>MajorPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="MajorContext.cs" />
     <Compile Include="MajorsContext.cs" />
-    <Compile Include="MajorsContextBuilder.cs" />
     <Compile Include="MajorVideoContext.cs" />
-    <Compile Include="MajorVideoContextBuilder.cs" />
+    <Compile Include="FunctionInfo.cs" />
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="OpenFileFunctionRequest.cs" />
+    <Compile Include="StringUtility.cs" />
     <Compile Include="VideosPage.xaml.cs">
       <DependentUpon>VideosPage.xaml</DependentUpon>
     </Compile>
@@ -114,6 +125,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

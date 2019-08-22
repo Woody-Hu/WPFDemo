@@ -13,6 +13,11 @@ namespace WPFDemo
             System.Diagnostics.Process.Start("explorer.exe", path);
         }
 
+        internal static void OpenFile(string programName, string path)
+        {
+            System.Diagnostics.Process.Start(programName, path);
+        }
+
         internal static void ShowSearchResultsInExplorer(string folderPath, string searchString)
         {
             string sFilter = "search-ms:displayname=";

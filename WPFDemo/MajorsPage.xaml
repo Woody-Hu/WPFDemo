@@ -9,6 +9,39 @@
       Title="MajorsPage">
 
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="618*"></RowDefinition>
+            <RowDefinition Height="382*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Name="TopGrid" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Viewbox Grid.Column="0" HorizontalAlignment="Left" Name="TitleViewBox">
+            </Viewbox>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <UniformGrid Name ="MajorsGrid" Grid.Column="1"></UniformGrid>
+            </Grid>
+        </Grid>
+        <Grid Name="BottomGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="10*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="3*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <UniformGrid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
+            </UniformGrid>
+        </Grid>
     </Grid>
 </Page>

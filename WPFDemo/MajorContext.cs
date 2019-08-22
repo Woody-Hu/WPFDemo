@@ -8,24 +8,21 @@ using System.Threading.Tasks;
 
 namespace WPFDemo
 {
-    internal class MajorContext
+    public class MajorContext
     {
-        internal string MajorName { get; }
+        public string MajorName { get; set; }
 
-        internal IReadOnlyDictionary<string, string> ResourcePaths { get; }
+        public IDictionary<string, FolderInfo> ToolInfos { get; set; } = new Dictionary<string, FolderInfo>();
 
-        internal string VideoPath { get; }
+        public IDictionary<string, FunctionInfo> FunctionInfos { get; set; } = new Dictionary<string, FunctionInfo>();
 
-        internal MajorContext(MajorContextBuilder builder)
-        {
-            MajorName = builder.MajorName;
-            if (builder.ResourcePaths == null)
-            {
-                builder.ResourcePaths = new Dictionary<string, string>();
-            }
+        public string AppTitle { get; set; }
 
-            ResourcePaths = new ReadOnlyDictionary<string, string>(builder.ResourcePaths);
-            VideoPath = builder.VideoPath;
-        }
+        public string AppTitleImagePath { get; set; }
+
+        public string TopBackgroundImagePath { get; set; }
+
+        public string BottomBackgroundImagePath { get; set; }
+
     }
 }

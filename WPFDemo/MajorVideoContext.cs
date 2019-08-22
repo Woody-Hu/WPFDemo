@@ -7,21 +7,14 @@ using System.Threading.Tasks;
 
 namespace WPFDemo
 {
-    internal class MajorVideoContext:MajorContext
+    public class MajorVideoContext
     {
-        internal IReadOnlyList<string> VideoFileNames { get; }
+        public IList<string> VideoFileNames { get; set; } = new List<string>();
 
-        internal bool StartVideoWhenActive { get; }
+        public IDictionary<string, FolderInfo> ToolInfos { get; set; } = new Dictionary<string, FolderInfo>();
 
-        internal MajorVideoContext(MajorVideoContextBuilder builder) : base(builder)
-        {
-            if (builder.VideoFileNames == null)
-            {
-                builder.VideoFileNames = new List<string>();
-            }
+        public string VideoStartButtonImagePath { get; set; }
 
-            VideoFileNames = new ReadOnlyCollection<string>(builder.VideoFileNames);
-            StartVideoWhenActive = builder.StartVideoWhenActive;
-        }
+        public string VideoPauseButtonImagePath { get; set; }
     }
 }
