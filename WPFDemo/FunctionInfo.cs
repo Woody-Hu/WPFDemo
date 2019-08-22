@@ -26,7 +26,5 @@ namespace WPFDemo
             var currentPath = Environment.CurrentDirectory;
             return Path.Combine(currentPath, FilePath);
         }
-
-
     }
 }

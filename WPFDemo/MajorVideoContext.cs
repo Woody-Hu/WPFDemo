@@ -9,9 +9,11 @@ namespace WPFDemo
 {
     public class MajorVideoContext
     {
+        public string MajorName { get; set; }
+
         public IList<string> VideoFileNames { get; set; } = new List<string>();
 
-        public IDictionary<string, FolderInfo> ToolInfos { get; set; } = new Dictionary<string, FolderInfo>();
+        public IDictionary<string, FolderInfo> ResourceInfos { get; set; } = new Dictionary<string, FolderInfo>();
 
         public string VideoStartButtonImagePath { get; set; }
 

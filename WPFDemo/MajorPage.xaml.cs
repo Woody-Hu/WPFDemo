@@ -44,7 +44,7 @@ namespace WPFDemo
                     var majorVideoContext = GetMajorVideoContext();
 
                     button.Tag = majorVideoContext;
-                    button.Click += VideoButton_Click;
+                    button.Click += NavigateVideoPageButton_Click;
                 }
                 else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
                 {
@@ -59,7 +59,7 @@ namespace WPFDemo
                 index++;
             }
 
-            PrepareGrid(this.ToolsGrid, this._majorContext.ToolInfos);
+            PrepareGrid(this.ToolsGrid, this._majorContext.ResourceInfos);
             GridUtility.SetBackGround(_majorContext.TopBackgroundImagePath, TopGrid);
             GridUtility.SetBackGround(_majorContext.BottomBackgroundImagePath, BottomGrid);
 
@@ -82,6 +82,7 @@ namespace WPFDemo
 
             if (!string.IsNullOrWhiteSpace(_majorContext.MajorName))
             {
+                Title = _majorContext.MajorName;
                 var textBlock = new TextBlock
                 {
                     Text = _majorContext.MajorName
@@ -95,16 +96,16 @@ namespace WPFDemo
             var majorVideoContext = new MajorVideoContext
             {
                 VideoFileNames = GetVideoFileNames(),
-                ToolInfos = _majorContext.ToolInfos
+                ResourceInfos = _majorContext.ResourceInfos
             };
-            var currentPath = Environment.CurrentDirectory;
-            var pluginPath = System.IO.Path.Combine(currentPath, _appConfig.PluginFolderName);
-            var playImagePath = System.IO.Path.Combine(pluginPath, AppConfig.VideoPlayImageName);
-            var pauseImagePath = System.IO.Path.Combine(pluginPath, AppConfig.VideoPauseImageName);
+
+            var playImagePath = _appConfig.GetVideoPlayImagePath();
+            var pauseImagePath = _appConfig.GetVideoPauseImagePath();
             playImagePath = File.Exists(playImagePath) ? playImagePath : string.Empty;
             pauseImagePath = File.Exists(pauseImagePath) ? pauseImagePath : string.Empty;
             majorVideoContext.VideoStartButtonImagePath = playImagePath;
             majorVideoContext.VideoPauseButtonImagePath = pauseImagePath;
+            majorVideoContext.MajorName = _majorContext.MajorName;
             return majorVideoContext;
         }
 
@@ -116,22 +117,22 @@ namespace WPFDemo
                 return new List<string>();
             }
 
-            if (Directory.Exists(videoFolderPath))
+            if (!Directory.Exists(videoFolderPath))
             {
-                Directory.CreateDirectory(videoFolderPath);
+                return new List<string>();
             }
 
             var files = Directory.GetFiles(videoFolderPath);
             var listVideoFiles = new List<string>();
             var set = new HashSet<string>();
-            foreach (var oneFormat in _appConfig.VideoFormates)
+            foreach (var oneFormat in _appConfig.VideoFormats)
             {
                 set.Add(oneFormat.ToLower());
             }
 
             foreach (var oneFile in files)
             {
-                var extension = System.IO.Path.GetExtension(oneFile).ToLower();
+                var extension = System.IO.Path.GetExtension(oneFile).ToLower().TrimStart('.');
                 if (set.Contains(extension))
                 {
                     listVideoFiles.Add(oneFile);
@@ -158,7 +159,7 @@ namespace WPFDemo
                 var viewBox = new Viewbox();
                 var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key);
                 button.Tag = oneInfoPair.Value.Path;
-                button.Click += ToolButton_Click;
+                button.Click += OpenFolderButton_Click;
                 viewBox.Child = button;
                 majorsGrid.Children.Add(viewBox);
                 viewBox.SetValue(Grid.RowProperty, useRowIndex);
@@ -177,14 +178,14 @@ namespace WPFDemo
             if ((sender as Button)?.Tag is FunctionInfo info) FolderUtility.OpenFile(info.ProgramName, info.GetFileFullPath());
         }
 
-        private void VideoButton_Click(object sender, RoutedEventArgs e)
+        private void NavigateVideoPageButton_Click(object sender, RoutedEventArgs e)
         {
             var majorVideoContext = (sender as Button)?.Tag as MajorVideoContext;
             var navigationService = this.NavigationService;
             navigationService?.Navigate(new VideosPage(majorVideoContext, _appConfig));
         }
 
-        private void ToolButton_Click(object sender, RoutedEventArgs e)
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
             var path = (sender as Button)?.Tag;
             if (path != null) FolderUtility.ExploreFolder(path.ToString());

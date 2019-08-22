@@ -35,7 +35,7 @@ namespace WPFDemo
 
             var majorsGrid = this.MajorsGrid;
             PrepareGrid(majorsGrid, this._majorsContext.MajorInfos,true);
-            PrepareGrid(this.ToolsGrid, this._majorsContext.ToolInfos,false);
+            PrepareGrid(this.ToolsGrid, this._majorsContext.ResourceInfos,false);
 
             GridUtility.SetBackGround(_majorsContext.TopBackgroundImagePath, TopGrid);
             GridUtility.SetBackGround(_majorsContext.BottomBackgroundImagePath, BottomGrid);
@@ -60,17 +60,18 @@ namespace WPFDemo
             if (!string.IsNullOrWhiteSpace(_majorsContext.AppTitle))
             {
                 this.WindowTitle = _majorsContext.AppTitle;
+                this.Title = _majorsContext.AppTitle;
             }
         }
 
-        private void MajorButton_Click(object sender, RoutedEventArgs e)
+        private void NavigateMajorPageButton_Click(object sender, RoutedEventArgs e)
         {
             var majorContext = (sender as Button)?.Tag as MajorContext;
             var navigationService = this.NavigationService;
             navigationService?.Navigate(new MajorPage(majorContext, _appConfig));
         }
 
-        private void ToolButton_Click(object sender, RoutedEventArgs e)
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
             var path = (sender as Button)?.Tag;
             if (path != null) FolderUtility.ExploreFolder(path.ToString());
@@ -97,12 +98,12 @@ namespace WPFDemo
                     MajorContext majorContext = MajorsContext.PrepareMajorContext(_majorsContext, _appConfig, oneInfoPair);
 
                     button.Tag = majorContext;
-                    button.Click += MajorButton_Click;
+                    button.Click += NavigateMajorPageButton_Click;
                 }
                 else
                 {
                     button.Tag = oneInfoPair.Value.Path;
-                    button.Click += ToolButton_Click;
+                    button.Click += OpenFolderButton_Click;
                 }
 
                 viewBox.Child = button;

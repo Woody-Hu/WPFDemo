@@ -12,7 +12,7 @@ namespace WPFDemo
     {
         public string MajorName { get; set; }
 
-        public IDictionary<string, FolderInfo> ToolInfos { get; set; } = new Dictionary<string, FolderInfo>();
+        public IDictionary<string, FolderInfo> ResourceInfos { get; set; } = new Dictionary<string, FolderInfo>();
 
         public IDictionary<string, FunctionInfo> FunctionInfos { get; set; } = new Dictionary<string, FunctionInfo>();
 

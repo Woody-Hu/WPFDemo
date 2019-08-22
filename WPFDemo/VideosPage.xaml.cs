@@ -23,15 +23,17 @@ namespace WPFDemo
     /// </summary>
     public partial class VideosPage : Page
     {
+        private readonly object _timerLock = new object();
         private readonly MajorVideoContext _majorVideoContext;
         private readonly AppConfig _appConfig;
         private int _currentIndex = -1;
         private bool _played = false;
-        private DispatcherTimer _timer = new DispatcherTimer();
+        private DispatcherTimer _timer ;
         private int _progressState = 0;
         private readonly Button _videoControlButton;
         private readonly Image _playButtonImage;
         private readonly Image _pauseButtonImage;
+        private double _lastProgress = 0.0d;
 
         public VideosPage(MajorVideoContext majorVideoContext, AppConfig appConfig)
         {
@@ -39,12 +41,13 @@ namespace WPFDemo
             _majorVideoContext = majorVideoContext;
             var listViewItemCommand = new ListViewItemCommand(this);
             InitializeComponent();
-            foreach (var keyValuePair in _majorVideoContext.ToolInfos)
+            VideoPlayer.UnloadedBehavior = MediaState.Close;
+            foreach (var keyValuePair in _majorVideoContext.ResourceInfos)
             {
                 var viewBox = new Viewbox();
                 var button = ButtonUtility.CreateButton(keyValuePair.Value.ImagePath, keyValuePair.Key);
                 button.Tag = keyValuePair.Value.Path;
-                button.Click += ToolsButton_Click;
+                button.Click += OpenFolderButton_Click;
                 viewBox.Child = button;
                 this.ToolPanel.Children.Add(viewBox);
             }
@@ -65,6 +68,8 @@ namespace WPFDemo
             {
                 _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", false);
             }
+
+            _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
             _videoControlButton.Click += VideoPlayerControl_Click;
             var buttonViewBox = new Viewbox {Child = _videoControlButton};
             ButtonGrid.Children.Add(buttonViewBox);
@@ -88,19 +93,76 @@ namespace WPFDemo
                 this.VideoFilesListView.SelectedIndex = 0;
                 ChangeCurrentIndex(0);
             }
+
+            if (!string.IsNullOrWhiteSpace(appConfig.VideoPageTitle) && !string.IsNullOrWhiteSpace(majorVideoContext.MajorName))
+            {
+                var title = $"{majorVideoContext.MajorName}.{appConfig.VideoPageTitle}";
+                Title = title;
+            }
+
+            this.Unloaded += VideosPage_Unloaded;
+        }
+
+        internal void VideoPlayerControlMethod()
+        {
+            if (_currentIndex == -1)
+            {
+                return;
+            }
+
+            if (!_played)
+            {
+                StartTimer();
+                VideoPlayer.Play();
+            }
+            else
+            {
+                StopTimer();
+                VideoPlayer.Pause();
+            }
+
+            _played = !_played;
+            if (_videoControlButton is ImageButton)
+            {
+                _videoControlButton.Content = _played ? _pauseButtonImage : _playButtonImage;
+            }
+            else
+            {
+                _videoControlButton.Content = _played ? "Pause" : "Play";
+            }
+
+            _videoControlButton.ToolTip = _played ? _appConfig.VideoPauseToolTip : _appConfig.VideoPlayToolTip;
+        }
+
+        private void VideosPage_Unloaded(object sender, RoutedEventArgs e)
+        {
+            _lastProgress = VideoSlider.Value;
+            if (_played)
+            {
+                StopTimer();
+            }
         }
 
         private void VideoPlayer_MediaOpened(object sender, RoutedEventArgs e)
         {
-            _timer = new DispatcherTimer();
             VideoSlider.Maximum = VideoPlayer.NaturalDuration.TimeSpan.TotalSeconds;
-            _timer.Interval = TimeSpan.FromSeconds(1);
-            _timer.Tick += _timer_Tick;
-            _timer.Start();
+            if (_lastProgress >= 0.0)
+            {
+                VideoPlayer.Position = TimeSpan.FromSeconds(_lastProgress);
+                VideoSlider.Value = _lastProgress;
+                _lastProgress = 0.0;
+            }
+            else
+            {
+                VideoSlider.Value = 0;
+            }
+
+            ReCreateTimer();
         }
 
         private void VideoPlayer_MediaEnded(object sender, RoutedEventArgs e)
         {
+            StopTimer();
             var files = _majorVideoContext.VideoFileNames;
             if (_currentIndex >= files.Count - 1)
             {
@@ -110,7 +172,7 @@ namespace WPFDemo
             ChangeCurrentIndex(_currentIndex);
         }
 
-        private void ToolsButton_Click(object sender, RoutedEventArgs e)
+        private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
         {
             if (!(sender is Button button)) return;
             var folderPath = button.Tag.ToString();
@@ -131,8 +193,13 @@ namespace WPFDemo
             }
         }
 
-        private void _timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
+            if (!_played)
+            {
+                return;
+            }
+
             if (Interlocked.CompareExchange(ref _progressState, 0, 0) == 0)
             {
                 VideoSlider.Value = VideoPlayer.Position.TotalSeconds;
@@ -141,13 +208,20 @@ namespace WPFDemo
 
         private void VideoSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
         {
+            //handle when video have not played
+            if (!_played)
+            {
+                VideoPlayer.Play();
+                VideoPlayer.Pause();
+            }
+
             VideoPlayer.Position = TimeSpan.FromSeconds(VideoSlider.Value);
-            Interlocked.CompareExchange(ref _progressState, 1, 0);
+            Interlocked.CompareExchange(ref _progressState, 0, 1);
         }
 
         private void VideoSlider_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
         {
-            Interlocked.CompareExchange(ref _progressState, 0, 1);
+            Interlocked.CompareExchange(ref _progressState, 1, 0);
         }
 
         private void AudioSlider_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
@@ -157,32 +231,37 @@ namespace WPFDemo
 
         private void VideoPlayerControl_Click(object sender, RoutedEventArgs e)
         {
-            if (_currentIndex == -1)
-            {
-                return;
-            }
+            VideoPlayerControlMethod();
+        }
 
-            if (!_played)
+        private void StartTimer()
+        {
+            lock (_timerLock)
             {
-                _timer.Start();
-                VideoPlayer.Play();
+                _timer?.Start();
             }
-            else
+        }
+
+        private void StopTimer()
+        {
+            lock (_timerLock)
             {
                 _timer.Stop();
-                VideoPlayer.Pause();
             }
+        }
 
-            _played = !_played;
-            if (_videoControlButton is ImageButton)
+        private void ReCreateTimer()
+        {
+            lock (_timerLock)
             {
-                _videoControlButton.Content = _played ? _playButtonImage : _pauseButtonImage;
+                _timer?.Stop();
+                _timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                _timer.Tick += Timer_Tick;
+                _timer.Start();
             }
-            else
-            {
-                _videoControlButton.Content = _played ? "Pause" : "Play";
-            }
-
         }
 
         private class ListViewItemCommand : ICommand

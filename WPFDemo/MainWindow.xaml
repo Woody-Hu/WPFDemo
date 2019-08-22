@@ -24,5 +24,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <RoutedUICommand x:Key="VideoPlayButtonCommand"/>
     </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="{StaticResource VideoPlayButtonCommand}" Executed="VideoPlayButtonExecuted"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="Space" Command="{StaticResource VideoPlayButtonCommand}"/>
+    </Window.InputBindings>
 </NavigationWindow>

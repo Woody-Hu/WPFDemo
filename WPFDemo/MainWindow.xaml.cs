@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Path = System.IO.Path;
 
 namespace WPFDemo
 {
@@ -25,15 +26,14 @@ namespace WPFDemo
         public MainWindow()
         {
             InitializeComponent();
-            AppConfig appConfig = new AppConfig();
+            var appConfig = new AppConfig();
             var configFilePath = AppConfig.GetConfigFilePath();
             Page expectPage = null;
             if (File.Exists(configFilePath))
             {
                 try
                 {
-                    var configJson = File.ReadAllText(configFilePath);
-                    appConfig = JsonConvert.DeserializeObject<AppConfig>(configJson);
+                    appConfig = PrepareAppConfig(configFilePath);
                 }
                 catch
                 {
@@ -41,47 +41,123 @@ namespace WPFDemo
                 }
             }
 
-            if (appConfig.MajorNames.Count <= 0)
+
+            var majorNames = appConfig.GetMajorNames();
+            if (majorNames.Count <= 0)
             {
                 expectPage = new MajorsPage(new MajorsContext(), appConfig);
             }
-            else if (appConfig.MajorNames.Count == 1)
+            else if (majorNames.Count == 1)
             {
-                MajorsContext majorsContext = PrepareMajorsContext(appConfig);
+                var majorsContext = PrepareMajorsContext(appConfig);
                 var majorContext = MajorsContext.PrepareMajorContext(majorsContext, appConfig, majorsContext.MajorInfos.First());
                 expectPage = new MajorPage(majorContext, appConfig);
             }
             else
             {
-                MajorsContext majorsContext = PrepareMajorsContext(appConfig);
+                var majorsContext = PrepareMajorsContext(appConfig);
 
                 expectPage = new MajorsPage(majorsContext, appConfig);
+            }
+
+            var icoPath = appConfig.GetIcoImagePath().GetExistPath();
+            if (!string.IsNullOrWhiteSpace(icoPath))
+            {
+                Icon = new BitmapImage(new Uri(icoPath));
             }
 
             this.NavigationService.Navigate(expectPage);
         }
 
+        private static AppConfig PrepareAppConfig(string configFilePath)
+        {
+            var configJson = File.ReadAllText(configFilePath);
+            var appConfig = JsonConvert.DeserializeObject<AppConfig>(configJson);
+            if (string.IsNullOrWhiteSpace(appConfig.VideoFolderName))
+            {
+                appConfig.VideoFolderName = "Videos";
+            }
+
+            CreateFolderIfNotExist(appConfig.GetVideoFolderPath());
+            CreateFolderIfNotExist(appConfig.GetPluginFolderPath());
+            var currentPath = Environment.CurrentDirectory;
+            var allDirectories = Directory.GetDirectories(currentPath);
+            var resourcesDirectories = new List<string>();
+            var videoFolderInfo = new DirectoryInfo(appConfig.GetVideoFolderPath());
+            foreach (var oneDirectory in videoFolderInfo.GetDirectories())
+            {
+                appConfig.AddMajorName(oneDirectory.Name);
+            }
+
+            foreach (var oneDirectory in allDirectories)
+            {
+                var directoryInfo = new DirectoryInfo(oneDirectory);
+                if (directoryInfo.Name == appConfig.VideoFolderName || directoryInfo.Name == appConfig.PluginFolderName)
+                {
+                    continue;
+                }
+
+                resourcesDirectories.Add(oneDirectory);
+                appConfig.AddResourceName(directoryInfo.Name);
+
+                foreach (var majorDirectory in directoryInfo.GetDirectories())
+                {
+                    appConfig.AddMajorName(majorDirectory.Name);
+                }
+            }
+
+            var allMajors = appConfig.GetMajorNames();
+            foreach (var oneResourcePath in resourcesDirectories)
+            {
+                foreach (var oneMajorName in allMajors)
+                {
+                    var majorPath = Path.Combine(oneResourcePath, oneMajorName);
+                    CreateFolderIfNotExist(majorPath);
+                }
+            }
+
+            return appConfig;
+        }
+
+        private static string CreateFolderIfNotExist(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+            {
+                return path;
+            }
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            return path;
+        }
+
         private static MajorsContext PrepareMajorsContext(AppConfig appConfig)
         {
-            var majorsContext = new MajorsContext();
-            majorsContext.AppTitle = appConfig.AppTitle;
-            majorsContext.AppTitleImagePath = AppConfig.GetAppTitleImagePath();
-            majorsContext.TopBackgroundImagePath = AppConfig.GetAppTopBackgroundImagePath();
-            majorsContext.BottomBackgroundImagePath = AppConfig.GetAppBottomBackgroundImagePath();
+            var majorsContext = new MajorsContext
+            {
+                AppTitle = appConfig.AppTitle,
+                AppTitleImagePath = appConfig.GetAppTitleImagePath(),
+                TopBackgroundImagePath = appConfig.GetAppTopBackgroundImagePath(),
+                BottomBackgroundImagePath = appConfig.GetAppBottomBackgroundImagePath()
+            };
 
-            foreach (var oneMajorName in appConfig.MajorNames)
+            
+            foreach (var oneMajorName in appConfig.GetMajorNames())
             {
                 if (majorsContext.MajorInfos.ContainsKey(oneMajorName))
                 {
                     continue;
                 }
 
-                majorsContext.MajorInfos.Add(oneMajorName, new FolderInfo() { Name = oneMajorName, ImagePath = AppConfig.GetMajorFolderImagePath(oneMajorName) });
+                majorsContext.MajorInfos.Add(oneMajorName, new FolderInfo() { Name = oneMajorName, ImagePath = appConfig.GetMajorFolderImagePath(oneMajorName) });
             }
 
-            foreach (var oneResourceFolderName in appConfig.ResourceFolderNames)
+            foreach (var oneResourceFolderName in appConfig.GetResourceNames())
             {
-                if (majorsContext.ToolInfos.ContainsKey(oneResourceFolderName))
+                if (majorsContext.ResourceInfos.ContainsKey(oneResourceFolderName))
                 {
                     continue;
                 }
@@ -92,10 +168,18 @@ namespace WPFDemo
                     continue;
                 }
 
-                majorsContext.ToolInfos.Add(oneResourceFolderName, new FolderInfo() { Name = oneResourceFolderName, ImagePath = AppConfig.GetResourceFolderImagePath(oneResourceFolderName), Path = resourcePath });
+                majorsContext.ResourceInfos.Add(oneResourceFolderName, new FolderInfo() { Name = oneResourceFolderName, ImagePath = appConfig.GetResourceFolderImagePath(oneResourceFolderName), Path = resourcePath });
             }
 
             return majorsContext;
+        }
+
+        private void VideoPlayButtonExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if ((sender as Window)?.Content is VideosPage page)
+            {
+                page.VideoPlayerControlMethod();
+            }
         }
     }
 }
