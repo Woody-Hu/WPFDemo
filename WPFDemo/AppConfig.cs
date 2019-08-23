@@ -19,6 +19,8 @@ namespace WPFDemo
 
         private const string AppBottomBackgroundImageName = "App_BottomBackground.jpg";
 
+        private const string MajorTotalBackgroundImageName = "_Major_TopBackground.jpg";
+
         private const string MajorTopBackgroundImageName = "_Major_TopBackground.jpg";
 
         private const string MajorBottomBackgroundImageName = "_Major_BottomBackground.jpg";
