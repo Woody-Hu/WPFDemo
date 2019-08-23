@@ -66,6 +66,11 @@ namespace WPFDemo
                 Icon = new BitmapImage(new Uri(icoPath));
             }
 
+            if (!string.IsNullOrWhiteSpace(appConfig.AppTitle))
+            {
+                this.Title = appConfig.AppTitle;
+            }
+
             this.NavigationService.Navigate(expectPage);
         }
 

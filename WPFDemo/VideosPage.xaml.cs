@@ -181,12 +181,20 @@ namespace WPFDemo
 
         private void ChangeCurrentIndex(int index)
         {
+            var nowCurrentIndex = _currentIndex;
             var nowPaused = !_played;
             VideoPlayer.Stop();
             _currentIndex = index;
             var files = _majorVideoContext.VideoFileNames;
+            //same index release
+            if (nowCurrentIndex == _currentIndex)
+            {
+                VideoPlayer.Source = null;
+            }
+
             VideoPlayer.Source = new Uri(files[_currentIndex]);
             this.VideoFilesListView.SelectedIndex = _currentIndex;
+
             if (!nowPaused)
             {
                 VideoPlayer.Play();
