@@ -15,7 +15,18 @@ namespace WPFDemo
 
         internal static void OpenFile(string programName, string path)
         {
-            System.Diagnostics.Process.Start(programName, path);
+            if (!string.IsNullOrWhiteSpace(programName) && !string.IsNullOrWhiteSpace(path))
+            {
+                System.Diagnostics.Process.Start(programName, path);
+            }
+            else if (!string.IsNullOrWhiteSpace(programName))
+            {
+                System.Diagnostics.Process.Start(programName);
+            }
+            else if (!string.IsNullOrWhiteSpace(path))
+            {
+                System.Diagnostics.Process.Start(path);
+            }
         }
 
         internal static void ShowSearchResultsInExplorer(string folderPath, string searchString)

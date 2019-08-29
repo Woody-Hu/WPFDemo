@@ -92,7 +92,7 @@ namespace WPFDemo
             foreach (var oneInfoPair in infos)
             {
                 var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key);
+                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key, oneInfoPair.Value.MoveEnterImagePath);
                 if (isMajorRequest)
                 {
                     MajorContext majorContext = MajorsContext.PrepareMajorContext(_majorsContext, _appConfig, oneInfoPair);

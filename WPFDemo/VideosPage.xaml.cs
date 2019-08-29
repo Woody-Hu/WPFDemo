@@ -45,14 +45,29 @@ namespace WPFDemo
             foreach (var keyValuePair in _majorVideoContext.ResourceInfos)
             {
                 var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(keyValuePair.Value.ImagePath, keyValuePair.Key);
+                var button = ButtonUtility.CreateButton(keyValuePair.Value.ImagePath, keyValuePair.Key, keyValuePair.Value.MoveEnterImagePath);
                 button.Tag = keyValuePair.Value.Path;
                 button.Click += OpenFolderButton_Click;
                 viewBox.Child = button;
                 this.ToolPanel.Children.Add(viewBox);
             }
 
-            if (!string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath))
+            if (CanCreateVideoImageButton())
+            {
+                var list = new List<Image>();
+                var pathList = new List<string>() { _majorVideoContext.VideoStartButtonImagePath , _majorVideoContext.VideoStartButtonMouseEnterImagePath, _majorVideoContext.VideoPauseButtonImagePath, _majorVideoContext.VideoPauseButtonMouseEnterImagePath};
+                foreach (var onePath in pathList)
+                {
+                    list.Add(new Image
+                    {
+                        Source = new BitmapImage(new Uri(onePath))
+                    });
+                }
+
+                _videoControlButton = new VideoImageButton(list.ToArray());
+                _videoControlButton.Content = list[0];
+            }
+            else if (CanCreateImageButton())
             {
                 _playButtonImage = new Image
                 {
@@ -62,11 +77,12 @@ namespace WPFDemo
                 {
                     Source = new BitmapImage(new Uri(_majorVideoContext.VideoPauseButtonImagePath))
                 };
-                _videoControlButton = ButtonUtility.CreateButton(_playButtonImage, "Play");
+
+                _videoControlButton = ButtonUtility.CreateButton(_playButtonImage, "Play", null);
             }
             else
             {
-                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", false);
+                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", null, false);
             }
 
             _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
@@ -122,7 +138,11 @@ namespace WPFDemo
             }
 
             _played = !_played;
-            if (_videoControlButton is ImageButton)
+            if (_videoControlButton is VideoImageButton videoImageButton)
+            {
+                videoImageButton.ChangePlayed(_played);
+            }
+            else if (_videoControlButton is ImageButton)
             {
                 _videoControlButton.Content = _played ? _pauseButtonImage : _playButtonImage;
             }
@@ -270,6 +290,16 @@ namespace WPFDemo
                 _timer.Tick += Timer_Tick;
                 _timer.Start();
             }
+        }
+
+        private bool CanCreateImageButton()
+        {
+            return !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath);
+        }
+
+        private bool CanCreateVideoImageButton()
+        {
+            return !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonMouseEnterImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonMouseEnterImagePath);
         }
 
         private class ListViewItemCommand : ICommand

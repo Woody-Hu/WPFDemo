@@ -38,7 +38,7 @@ namespace WPFDemo
             foreach (var oneFunctionInfo in functionInfos)
             {
                 var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key);
+                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key, oneFunctionInfo.Value.MouseEnterImagePath);
                 if (oneFunctionInfo.Value.Kind == FunctionKind.Video)
                 {
                     var majorVideoContext = GetMajorVideoContext();
@@ -104,7 +104,9 @@ namespace WPFDemo
             playImagePath = File.Exists(playImagePath) ? playImagePath : string.Empty;
             pauseImagePath = File.Exists(pauseImagePath) ? pauseImagePath : string.Empty;
             majorVideoContext.VideoStartButtonImagePath = playImagePath;
+            majorVideoContext.VideoStartButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(playImagePath);
             majorVideoContext.VideoPauseButtonImagePath = pauseImagePath;
+            majorVideoContext.VideoPauseButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(pauseImagePath);
             majorVideoContext.MajorName = _majorContext.MajorName;
             return majorVideoContext;
         }
@@ -157,7 +159,7 @@ namespace WPFDemo
             foreach (var oneInfoPair in infos)
             {
                 var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key);
+                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key, oneInfoPair.Value.MoveEnterImagePath);
                 button.Tag = oneInfoPair.Value.Path;
                 button.Click += OpenFolderButton_Click;
                 viewBox.Child = button;

@@ -49,13 +49,15 @@ namespace WPFDemo
                 var majorToolImagePath = appConfig.GetMajorResourceImagePath(majorName, oneInfo.Key);
                 majorToolImagePath = majorToolImagePath.GetExistPath();
                 majorToolImagePath = string.IsNullOrWhiteSpace(majorToolImagePath) ? oneInfo.Value.ImagePath : majorToolImagePath;
-                majorContext.ResourceInfos.Add(oneInfo.Key, new FolderInfo() { Name = oneInfo.Key, Path = majorPath, ImagePath = majorToolImagePath });
+                var majorToolImageMouseEnterPath = AppConfig.GetMouseEnterImagePath(majorToolImagePath);
+                majorContext.ResourceInfos.Add(oneInfo.Key, new FolderInfo() { Name = oneInfo.Key, Path = majorPath, ImagePath = majorToolImagePath, MoveEnterImagePath = majorToolImageMouseEnterPath });
             }
 
             var videoFunctionDisplayName = string.IsNullOrWhiteSpace(appConfig.VideoFunctionDisplayName) ? "Video" : appConfig.VideoFunctionDisplayName;
             var majorVideoPath = appConfig.GetMajorVideoFolderPath(majorName);
             var videoImagePath = appConfig.GetMajorVideoImagePath(majorName).GetExistPath();
-            majorContext.FunctionInfos.Add(videoFunctionDisplayName, new FunctionInfo() { Kind = FunctionKind.Video, VideosPath = majorVideoPath, ImagePath = videoImagePath });
+            var mouseEnterImagePath = AppConfig.GetMouseEnterImagePath(videoImagePath);
+            majorContext.FunctionInfos.Add(videoFunctionDisplayName, new FunctionInfo() { Kind = FunctionKind.Video, VideosPath = majorVideoPath, ImagePath = videoImagePath, MouseEnterImagePath = mouseEnterImagePath });
             var openFileFunctionFile = appConfig.GetMajorOpeFileFunctionFilePath(majorName);
 
             if (!File.Exists(openFileFunctionFile)) return majorContext;
@@ -77,14 +79,15 @@ namespace WPFDemo
                     continue;
                 }
 
-                if (string.IsNullOrWhiteSpace(oneRequest.ProgramName) || string.IsNullOrWhiteSpace(oneRequest.FileFullName) || !File.Exists(oneRequest.FileFullName))
+                if (string.IsNullOrWhiteSpace(oneRequest.ProgramName) && string.IsNullOrWhiteSpace(oneRequest.FileFullName))
                 {
                     continue;
                 }
 
                 var functionImagePath = appConfig.GetMajorOpenFileFunctionImagePath(majorName, oneRequest.Name);
                 functionImagePath = functionImagePath.GetExistPath();
-                majorContext.FunctionInfos.Add(oneRequest.Name, new FunctionInfo() { Kind = FunctionKind.OpenFile, FunctionName = oneRequest.Name, ProgramName = oneRequest.ProgramName, FilePath = oneRequest.FileFullName, ImagePath = functionImagePath });
+                var mouseImagePath = AppConfig.GetMouseEnterImagePath(functionImagePath);
+                majorContext.FunctionInfos.Add(oneRequest.Name, new FunctionInfo() { Kind = FunctionKind.OpenFile, FunctionName = oneRequest.Name, ProgramName = oneRequest.ProgramName, FilePath = oneRequest.FileFullName, ImagePath = functionImagePath, MouseEnterImagePath = mouseImagePath });
             }
 
             return majorContext;

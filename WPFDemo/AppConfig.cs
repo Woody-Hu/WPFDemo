@@ -33,6 +33,8 @@ namespace WPFDemo
 
         private const string OpenFileFunctionImageSuffixName = "_OpenFile.png";
 
+        private const string MouseMoveEnterImageSuffixName = "_MouseMoveEnter";
+
         private const string AppConfigFileName = "appConfig.json";
 
         private const string IcoFileName = "app.ico";
@@ -119,6 +121,24 @@ namespace WPFDemo
             var currentPath = Environment.CurrentDirectory;
             var path = Path.Combine(currentPath, resourceName);
             return path;
+        }
+
+        public static string GetMouseEnterImagePath(string imagePath)
+        {
+            if (string.IsNullOrWhiteSpace(imagePath))
+            {
+                return string.Empty;
+            }
+
+            var fileInfo = new FileInfo(imagePath);
+            if (!fileInfo.Exists || string.IsNullOrWhiteSpace(fileInfo.Extension))
+            {
+                return string.Empty;
+            }
+
+            var baseName = fileInfo.FullName.TrimEnd(fileInfo.Extension.ToCharArray());
+            var name = baseName + MouseMoveEnterImageSuffixName + fileInfo.Extension;
+            return name.GetExistPath();
         }
 
         public string GetPluginFolderPath()

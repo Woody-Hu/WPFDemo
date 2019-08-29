@@ -157,7 +157,9 @@ namespace WPFDemo
                     continue;
                 }
 
-                majorsContext.MajorInfos.Add(oneMajorName, new FolderInfo() { Name = oneMajorName, ImagePath = appConfig.GetMajorFolderImagePath(oneMajorName) });
+                var imagePath = appConfig.GetMajorFolderImagePath(oneMajorName);
+                var imageMouseEnterPath = AppConfig.GetMouseEnterImagePath(imagePath);
+                majorsContext.MajorInfos.Add(oneMajorName, new FolderInfo() { Name = oneMajorName, ImagePath = imagePath, MoveEnterImagePath = imageMouseEnterPath });
             }
 
             foreach (var oneResourceFolderName in appConfig.GetResourceNames())
@@ -173,7 +175,9 @@ namespace WPFDemo
                     continue;
                 }
 
-                majorsContext.ResourceInfos.Add(oneResourceFolderName, new FolderInfo() { Name = oneResourceFolderName, ImagePath = appConfig.GetResourceFolderImagePath(oneResourceFolderName), Path = resourcePath });
+                var imagePath = appConfig.GetResourceFolderImagePath(oneResourceFolderName);
+                var imageMouseEnterPath = AppConfig.GetMouseEnterImagePath(imagePath);
+                majorsContext.ResourceInfos.Add(oneResourceFolderName, new FolderInfo() { Name = oneResourceFolderName, ImagePath = imagePath, MoveEnterImagePath = imageMouseEnterPath, Path = resourcePath });
             }
 
             return majorsContext;

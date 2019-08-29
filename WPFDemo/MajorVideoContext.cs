@@ -17,6 +17,10 @@ namespace WPFDemo
 
         public string VideoStartButtonImagePath { get; set; }
 
+        public string VideoStartButtonMouseEnterImagePath { get; set; }
+
         public string VideoPauseButtonImagePath { get; set; }
+
+        public string VideoPauseButtonMouseEnterImagePath { get; set; }
     }
 }

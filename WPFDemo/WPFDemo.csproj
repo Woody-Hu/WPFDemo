@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ButtonImages.cs" />
     <Compile Include="ButtonUtility.cs" />
     <Compile Include="ControlDoubleClick.cs" />
     <Compile Include="FolderInfo.cs" />
@@ -76,6 +77,7 @@
     <Compile Include="AppConfig.cs" />
     <Compile Include="OpenFileFunctionRequest.cs" />
     <Compile Include="StringUtility.cs" />
+    <Compile Include="VideoImageButton.cs" />
     <Compile Include="VideosPage.xaml.cs">
       <DependentUpon>VideosPage.xaml</DependentUpon>
     </Compile>

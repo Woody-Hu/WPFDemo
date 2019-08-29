@@ -15,6 +15,8 @@ namespace WPFDemo
 
         public string ImagePath { get; set; }
 
+        public string MoveEnterImagePath { get; set; }
+
         public string Path { get; set; }
     }
 }

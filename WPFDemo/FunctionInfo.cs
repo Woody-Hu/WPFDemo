@@ -21,10 +21,20 @@ namespace WPFDemo
 
         public string ImagePath { get; set; }
 
+        public string MouseEnterImagePath { get; set; }
+
         public string GetFileFullPath()
         {
             var currentPath = Environment.CurrentDirectory;
-            return Path.Combine(currentPath, FilePath);
+            var combinedPath = Path.Combine(currentPath, FilePath);
+            if (File.Exists(combinedPath))
+            {
+                return combinedPath;
+            }
+            else
+            {
+                return FilePath;
+            }
         }
     }
 }

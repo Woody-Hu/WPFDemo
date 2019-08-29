@@ -14,20 +14,20 @@ namespace WPFDemo
 {
     public static class ButtonUtility
     {
-        public static Button CreateButton(string imagePath, string content)
+        public static Button CreateButton(string imagePath, string content, string moveEnterImagePath)
         {
             if (string.IsNullOrWhiteSpace(imagePath))
             {
-                return CreateButton((Image)null, content);
+                return CreateButton((Image)null, content, null);
             }
             else
             {
                 var image = new Image {Source = new BitmapImage(new Uri(imagePath))};
-                return CreateButton(image, content);
+                return CreateButton(image, content, moveEnterImagePath);
             }
         }
 
-        public static Button CreateButton(Image image, string content, bool useClip = true)
+        public static Button CreateButton(Image image, string content, string moveEnterImagePath, bool useClip = true)
         {
             Button button;
             if (image == null)
@@ -42,7 +42,18 @@ namespace WPFDemo
             }
             else
             {
-                button = new ImageButton {Content = image};
+                button = new ImageButton { Content = image };
+                if (!string.IsNullOrWhiteSpace(moveEnterImagePath))
+                {
+                    var moveEnterImage = new Image { Source = new BitmapImage(new Uri(moveEnterImagePath)) };
+                    var images = new Image[] { image, moveEnterImage };
+                    ButtonImages.SetButtonImages(button, images);
+                }
+                else
+                {
+                    ButtonImages.SetButtonImages(button, null);
+                }
+
             }
             button.Margin = new Thickness(10);
             button.HorizontalAlignment = HorizontalAlignment.Center;
@@ -53,14 +64,54 @@ namespace WPFDemo
             return button;
         }
 
+
         private static void Button_MouseLeave(object sender, MouseEventArgs e)
         {
-            ((Button) sender).Margin = new Thickness(10);
+            var imageButton = sender as ImageButton;
+            if (imageButton != null && ButtonImages.GetButtonImages(imageButton) != null)
+            {
+                var images = ButtonImages.GetButtonImages(imageButton);
+                if (imageButton.IsMouseOver)
+                {
+                    var image = images[1];
+                    imageButton.Content = image;
+                }
+                else
+                {
+                    var image = images[0];
+                    imageButton.Content = image;
+                }
+            }
+            else
+            {
+                ((Button)sender).Margin = new Thickness(10);
+            }
         }
 
         private static void Button_MouseEnter(object sender, MouseEventArgs e)
         {
-            ((Button) sender).Margin = new Thickness(0);
+            var imageButton = sender as ImageButton;
+            if (imageButton != null && ButtonImages.GetButtonImages(imageButton) != null)
+            {
+                var images = ButtonImages.GetButtonImages(imageButton);
+                if (imageButton.IsMouseOver)
+                {
+                    var image = images[1];
+                    imageButton.Content = image;
+                }
+                else
+                {
+                    var image = images[0];
+                    imageButton.Content = image;
+                }
+
+            }
+            else
+            {
+                ((Button)sender).Margin = new Thickness(0);
+            }
         }
+
+
     }
 }
