@@ -19,16 +19,19 @@ namespace WPFDemo
     /// <summary>
     /// Interaction logic for MajorPage.xaml
     /// </summary>
-    public partial class MajorPage : Page
+    public partial class MajorPage : Page,IBarPage
     {
         private readonly MajorContext _majorContext;
         private readonly AppConfig _appConfig;
         private readonly int _countPerRow = 4;
+        private readonly Window _window;
+        private IList<ImageButton> _imageButtons;
 
-        public MajorPage(MajorContext majorContext, AppConfig appConfig)
+        public MajorPage(MajorContext majorContext, AppConfig appConfig, Window window)
         {
             _majorContext = majorContext;
             _appConfig = appConfig;
+            _window = window;
             InitializeComponent();
             var functionInfos = _majorContext.FunctionInfos;
             var columnCount = functionInfos.Count;
@@ -60,24 +63,15 @@ namespace WPFDemo
             }
 
             PrepareGrid(this.ToolsGrid, this._majorContext.ResourceInfos);
-            GridUtility.SetBackGround(_majorContext.TopBackgroundImagePath, TopGrid);
-            GridUtility.SetBackGround(_majorContext.BottomBackgroundImagePath, BottomGrid);
-
-            if (string.IsNullOrWhiteSpace(_majorContext.AppTitleImagePath))
+            var majorBackgroundImagePath = appConfig.GetMajorBackgroundImagePath(_majorContext.MajorName);
+            if (!string.IsNullOrWhiteSpace(majorBackgroundImagePath))
             {
-                var textBlock = new TextBlock
-                {
-                    Text = _majorContext.AppTitle
-                };
-                TitleViewBox.Child = textBlock;
+                GridUtility.SetBackGround(majorBackgroundImagePath, MainGrid);
             }
             else
             {
-                Image image = new Image
-                {
-                    Source = new BitmapImage(new Uri(_majorContext.AppTitleImagePath))
-                };
-                TitleViewBox.Child = image;
+                GridUtility.SetBackGround(_majorContext.TopBackgroundImagePath, TopGrid);
+                GridUtility.SetBackGround(_majorContext.BottomBackgroundImagePath, BottomGrid);
             }
 
             if (!string.IsNullOrWhiteSpace(_majorContext.MajorName))
@@ -89,6 +83,8 @@ namespace WPFDemo
                 };
                 PageTitleViewBox.Child = textBlock;
             }
+
+            BarPageUtility.PrepareBarPage(this, _appConfig);
         }
 
         private MajorVideoContext GetMajorVideoContext()
@@ -175,16 +171,42 @@ namespace WPFDemo
             }
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (_imageButtons == null)
+            {
+                return;
+            }
+
+            foreach (var oneImageButton in _imageButtons)
+            {
+                var images = ButtonImages.GetButtonImages(oneImageButton);
+                if (oneImageButton.IsMouseOver)
+                {
+                    var image = images[1];
+                    oneImageButton.Content = image;
+                }
+                else
+                {
+                    var image = images[0];
+                    oneImageButton.Content = image;
+                }
+            }
+
+
+            base.OnMouseMove(e);
+        }
+
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
-            if ((sender as Button)?.Tag is FunctionInfo info) FolderUtility.OpenFile(info.ProgramName, info.GetFileFullPath());
+            if ((sender as Button)?.Tag is FunctionInfo info) FolderUtility.OpenFile(info.ProgramName, info.GetFileFullPath(), info.WorkDirection);
         }
 
         private void NavigateVideoPageButton_Click(object sender, RoutedEventArgs e)
         {
             var majorVideoContext = (sender as Button)?.Tag as MajorVideoContext;
             var navigationService = this.NavigationService;
-            navigationService?.Navigate(new VideosPage(majorVideoContext, _appConfig));
+            navigationService?.Navigate(new VideosPage(majorVideoContext, _appConfig,_window));
         }
 
         private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
@@ -192,5 +214,65 @@ namespace WPFDemo
             var path = (sender as Button)?.Tag;
             if (path != null) FolderUtility.ExploreFolder(path.ToString());
         }
+
+        private void BarGrid_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                _window.DragMove();
+            }
+        }
+
+
+        #region interface
+        public Window GetWindow()
+        {
+            return _window;
+        }
+
+        public Viewbox GetHomepageViewBox()
+        {
+            return HomePageButtonViewBox;
+        }
+
+        public Viewbox GetMinimumViewBox()
+        {
+            return MinimizeButtonViewBox;
+        }
+
+        public Viewbox GetCloseViewBox()
+        {
+            return CloseButtonViewBox;
+        }
+
+        public Grid GetBarGrid()
+        {
+            return BarGrid;
+        }
+
+        public Viewbox GetTitleViewBox()
+        {
+            return TitleViewBox;
+        }
+
+        public NavigationService GetNavigationService()
+        {
+            return NavigationService;
+        }
+
+        public void SetBarButtons(IList<ImageButton> imageButtons)
+        {
+            if (imageButtons == null)
+            {
+                return;
+            }
+
+            if (_imageButtons == null)
+            {
+                _imageButtons = imageButtons;
+            }
+        }
+
+        #endregion
     }
 }

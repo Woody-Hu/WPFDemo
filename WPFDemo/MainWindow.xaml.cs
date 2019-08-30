@@ -45,19 +45,21 @@ namespace WPFDemo
             var majorNames = appConfig.GetMajorNames();
             if (majorNames.Count <= 0)
             {
-                expectPage = new MajorsPage(new MajorsContext(), appConfig);
+                expectPage = new MajorsPage(new MajorsContext(), appConfig, this);
+                HomePageUtility.HomePageFunc = () => new MajorsPage(new MajorsContext(), appConfig, this);
             }
             else if (majorNames.Count == 1)
             {
                 var majorsContext = PrepareMajorsContext(appConfig);
                 var majorContext = MajorsContext.PrepareMajorContext(majorsContext, appConfig, majorsContext.MajorInfos.First());
-                expectPage = new MajorPage(majorContext, appConfig);
+                expectPage = new MajorPage(majorContext, appConfig, this);
+                HomePageUtility.HomePageFunc =()=> new MajorPage(majorContext, appConfig, this);
             }
             else
             {
                 var majorsContext = PrepareMajorsContext(appConfig);
-
-                expectPage = new MajorsPage(majorsContext, appConfig);
+                expectPage = new MajorsPage(majorsContext, appConfig, this);
+                HomePageUtility.HomePageFunc = () => new MajorsPage(majorsContext, appConfig, this);
             }
 
             var icoPath = appConfig.GetIcoImagePath().GetExistPath();
@@ -71,6 +73,7 @@ namespace WPFDemo
                 this.Title = appConfig.AppTitle;
             }
 
+            
             this.NavigationService.Navigate(expectPage);
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,19 @@ namespace WPFDemo
 
         private const string VideoPauseImageName = "VideoPause.png";
 
+        private const string HomeButtonImageName = "Home.png";
+
+        private const string MinimizeButtonImageName = "Minimize.png";
+
+        private const string CloseButtonImageName = "Close.png";
+
         private const string AppTitleImageName = "App_Title.png";
+
+        private const string TitleBarBackgroundImageName = "Title_Background.jpg";
+
+        private const string APPBackgroundImageName = "App_Background.jpg";
+
+        private const string MajorBackgroundImageName = "_Major_Background.jpg";
 
         private const string AppTopBackgroundImageName = "App_TopBackground.jpg";
 
@@ -53,6 +66,12 @@ namespace WPFDemo
 
         public string VideoPauseToolTip { get; set; } = "Pause";
 
+        public string HomePageToolTip { get; set; } = "Homepage";
+
+        public string MinimumToolTip { get; set; } = "Minimum";
+
+        public string CloseToolTip { get; set; } = "Close";
+
         public IList<string> VideoFormats { get; set; } = new List<string>();
 
         public string VideoFolderName { get; set; }
@@ -77,6 +96,31 @@ namespace WPFDemo
         public string GetVideoPauseImagePath()
         {
             return Path.Combine(GetPluginFolderPath(), AppConfig.VideoPauseImageName);
+        }
+
+        public string GetHomeButtonImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.HomeButtonImageName);
+        }
+
+        public string GetMinimizeButtonImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.MinimizeButtonImageName);
+        }
+
+        public string GetCloseButtonImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.CloseButtonImageName);
+        }
+
+        public string GetAPPBackgroundImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.APPBackgroundImageName).GetExistPath();
+        }
+
+        public string GetMajorBackgroundImagePath(string majorName)
+        {
+            return Path.Combine(GetPluginFolderPath(), $"{majorName}{MajorBackgroundImageName}").GetExistPath();
         }
 
         public string GetIcoImagePath()
@@ -165,6 +209,12 @@ namespace WPFDemo
             return path.GetExistPath();
         }
 
+        public string GetTitleBarBackgroundImagePath()
+        {
+            var path = Path.Combine(GetPluginFolderPath(), TitleBarBackgroundImageName);
+            return path.GetExistPath();
+        }
+
         public string GetAppBottomBackgroundImagePath()
         {
             var path = Path.Combine(GetPluginFolderPath(), AppBottomBackgroundImageName);
@@ -185,7 +235,6 @@ namespace WPFDemo
 
         public string GetMajorTopBackgroundImagePath(string majorName)
         {
-            var currentPath = Environment.CurrentDirectory;
             var path = Path.Combine(GetPluginFolderPath(), majorName + MajorTopBackgroundImageName);
             return path.GetExistPath();
         }

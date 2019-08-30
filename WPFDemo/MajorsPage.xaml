@@ -10,17 +10,31 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="618*"></RowDefinition>
-            <RowDefinition Height="382*"></RowDefinition>
+            <RowDefinition Height="100*"></RowDefinition>
+            <RowDefinition Height="1000*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Name="TopGrid" Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="3*"></RowDefinition>
-            </Grid.RowDefinitions>
+        <Grid Grid.Row ="0" Name="BarGrid"  MouseMove="UIElement_OnMouseMove" Background ="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
             <Viewbox Grid.Column="0" HorizontalAlignment="Left" Name="TitleViewBox">
             </Viewbox>
-            <Grid Grid.Row="1">
+            <WrapPanel Grid.Column="1" HorizontalAlignment="Right">
+                <Viewbox HorizontalAlignment="Right" Name ="HomePageButtonViewBox" Margin ="5">
+                </Viewbox>
+                <Viewbox HorizontalAlignment="Right" Name ="MinimizeButtonViewBox" Margin ="5">
+                </Viewbox>
+                <Viewbox HorizontalAlignment="Right" Name ="CloseButtonViewBox" Margin ="5">
+                </Viewbox>
+            </WrapPanel>
+        </Grid>
+        <Grid Name="MainGrid" Grid.Row ="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="618*"></RowDefinition>
+                <RowDefinition Height="382*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Name="TopGrid" Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="10*"></ColumnDefinition>
@@ -28,20 +42,20 @@
                 </Grid.ColumnDefinitions>
                 <UniformGrid Name ="MajorsGrid" Grid.Column="1"></UniformGrid>
             </Grid>
-        </Grid>
-        <Grid Name="BottomGrid" Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="10*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="3*"></RowDefinition>
-                <RowDefinition Height="*"></RowDefinition>
-            </Grid.RowDefinitions>
-            <UniformGrid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
-            </UniformGrid>
+            <Grid Name="BottomGrid" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="10*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="3*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <UniformGrid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
+                </UniformGrid>
+            </Grid>
         </Grid>
     </Grid>
 </Page>

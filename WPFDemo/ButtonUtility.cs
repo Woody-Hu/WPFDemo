@@ -70,17 +70,7 @@ namespace WPFDemo
             var imageButton = sender as ImageButton;
             if (imageButton != null && ButtonImages.GetButtonImages(imageButton) != null)
             {
-                var images = ButtonImages.GetButtonImages(imageButton);
-                if (imageButton.IsMouseOver)
-                {
-                    var image = images[1];
-                    imageButton.Content = image;
-                }
-                else
-                {
-                    var image = images[0];
-                    imageButton.Content = image;
-                }
+                // use trigger
             }
             else
             {
@@ -93,18 +83,7 @@ namespace WPFDemo
             var imageButton = sender as ImageButton;
             if (imageButton != null && ButtonImages.GetButtonImages(imageButton) != null)
             {
-                var images = ButtonImages.GetButtonImages(imageButton);
-                if (imageButton.IsMouseOver)
-                {
-                    var image = images[1];
-                    imageButton.Content = image;
-                }
-                else
-                {
-                    var image = images[0];
-                    imageButton.Content = image;
-                }
-
+                // use trigger
             }
             else
             {

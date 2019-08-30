@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFDemo"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" >
+        Title="MainWindow" Height="450" Width="800" WindowStyle="None" ShowsNavigationUI ="False" AllowsTransparency="True">
     <Window.Resources>
         <Style TargetType="local:ImageButton">
             <Setter Property="OverridesDefaultStyle" Value="True" />
@@ -17,7 +17,10 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Opacity" Value="1.0" />
+                                <Setter Property ="local:ImageButtonMouseOver.ImageButtonMouseOver" Value="True"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property ="local:ImageButtonMouseOver.ImageButtonMouseOver" Value="False"></Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -32,4 +35,9 @@
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{StaticResource VideoPlayButtonCommand}"/>
     </Window.InputBindings>
+    <WindowChrome.WindowChrome>
+        <WindowChrome 
+            CaptionHeight="0"
+            ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
 </NavigationWindow>

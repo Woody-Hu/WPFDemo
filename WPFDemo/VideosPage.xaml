@@ -9,61 +9,81 @@
       Title="VideosPage">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="9*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="100*"></RowDefinition>
+            <RowDefinition Height="1000*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row ="0" Name="BarGrid"  MouseMove="BarGrid_OnMouseMove" Background ="Transparent">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="9*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <ListView Grid.Column="0" Name="VideoFilesListView" BorderBrush= "Transparent">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="local:ControlDoubleClick.Command" Value="{Binding DataContext.ShowInfoCommand, ElementName=window}" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-            </ListView>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="12*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                </Grid.RowDefinitions>
-                <Grid Grid.Column="0" Background="Black">
-                    <MediaElement Stretch="Uniform" LoadedBehavior="Manual" Grid.Row="0" Name="VideoPlayer" ScrubbingEnabled="True" >
-                    </MediaElement>
-                </Grid>
-                <Grid Grid.Row="1" VerticalAlignment="Center">
-                    <Slider Name="VideoSlider" Thumb.DragStarted="VideoSlider_DragStarted" Thumb.DragCompleted="VideoSlider_DragCompleted"></Slider>
-                </Grid>
-            </Grid>
+            <Viewbox Grid.Column="0" HorizontalAlignment="Left" Name="TitleViewBox">
+            </Viewbox>
+            <WrapPanel Grid.Column="1" HorizontalAlignment="Right">
+                <Viewbox HorizontalAlignment="Right" Name ="HomePageButtonViewBox">
+                </Viewbox>
+                <Viewbox HorizontalAlignment="Right" Name ="MinimizeButtonViewBox">
+                </Viewbox>
+                <Viewbox HorizontalAlignment="Right" Name ="CloseButtonViewBox">
+                </Viewbox>
+            </WrapPanel>
         </Grid>
         <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-                <ColumnDefinition Width="*"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility ="Disabled"  HorizontalScrollBarVisibility="Auto">
-                <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Name="ToolPanel">
-                </StackPanel>
-            </ScrollViewer>
-            <Grid Grid.Column="2" Name="ButtonGrid">
-            </Grid>
-            <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="9*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="9*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="volume" VerticalAlignment="Center"></TextBlock>
-                <Slider Grid.Column="1" Name="AudioSlider" VerticalAlignment="Center" Minimum="0" Maximum="1" Value="0.5" Thumb.DragCompleted="AudioSlider_DragCompleted">
-                </Slider>
+                <ListView Grid.Column="0" Name="VideoFilesListView" BorderBrush= "Transparent">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="local:ControlDoubleClick.Command" Value="{Binding DataContext.ShowInfoCommand, ElementName=window}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="12*"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Column="0" Background="Black">
+                        <MediaElement Stretch="Uniform" LoadedBehavior="Manual" Grid.Row="0" Name="VideoPlayer" ScrubbingEnabled="True" >
+                        </MediaElement>
+                    </Grid>
+                    <Grid Grid.Row="1" VerticalAlignment="Center">
+                        <Slider Name="VideoSlider" Thumb.DragStarted="VideoSlider_DragStarted" Thumb.DragCompleted="VideoSlider_DragCompleted"></Slider>
+                    </Grid>
+                </Grid>
             </Grid>
-
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility ="Disabled"  HorizontalScrollBarVisibility="Auto">
+                    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Name="ToolPanel">
+                    </StackPanel>
+                </ScrollViewer>
+                <Grid Grid.Column="2" Name="ButtonGrid">
+                </Grid>
+                <Grid Grid.Column="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Right" Text="volume" VerticalAlignment="Center"></TextBlock>
+                    <Slider Grid.Column="1" Name="AudioSlider" VerticalAlignment="Center" Minimum="0" Maximum="1" Value="0.5" Thumb.DragCompleted="AudioSlider_DragCompleted">
+                    </Slider>
+                </Grid>
+            </Grid>
         </Grid>
-
     </Grid>
 </Page>

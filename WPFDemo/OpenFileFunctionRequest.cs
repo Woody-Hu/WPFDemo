@@ -13,5 +13,7 @@ namespace WPFDemo
         public string ProgramName { get; set; }
 
         public string FileFullName { get; set; }
+
+        public string WorkDirection { get; set; }
     }
 }

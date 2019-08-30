@@ -59,6 +59,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BarPageUtility.cs" />
     <Compile Include="ButtonImages.cs" />
     <Compile Include="ButtonUtility.cs" />
     <Compile Include="ControlDoubleClick.cs" />
@@ -66,7 +67,10 @@
     <Compile Include="FolderUtility.cs" />
     <Compile Include="FunctionKind.cs" />
     <Compile Include="GridUtility.cs" />
+    <Compile Include="HomePageUtility.cs" />
+    <Compile Include="IBarPage.cs" />
     <Compile Include="ImageButton.cs" />
+    <Compile Include="ImageButtonMouseOver.cs" />
     <Compile Include="MajorPage.xaml.cs">
       <DependentUpon>MajorPage.xaml</DependentUpon>
     </Compile>

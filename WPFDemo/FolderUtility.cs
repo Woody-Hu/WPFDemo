@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +14,17 @@ namespace WPFDemo
             System.Diagnostics.Process.Start("explorer.exe", path);
         }
 
-        internal static void OpenFile(string programName, string path)
+        internal static void OpenFile(string programName, string path, string workDirection)
         {
-            if (!string.IsNullOrWhiteSpace(programName) && !string.IsNullOrWhiteSpace(path))
+            if (!string.IsNullOrWhiteSpace(workDirection) && !string.IsNullOrWhiteSpace(programName))
+            {
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = programName;
+                psi.WorkingDirectory = workDirection;
+                psi.Arguments = path;
+                System.Diagnostics.Process.Start(psi);
+            }
+            else if (!string.IsNullOrWhiteSpace(programName) && !string.IsNullOrWhiteSpace(path))
             {
                 System.Diagnostics.Process.Start(programName, path);
             }

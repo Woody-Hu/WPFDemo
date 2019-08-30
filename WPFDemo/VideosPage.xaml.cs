@@ -21,7 +21,7 @@ namespace WPFDemo
     /// <summary>
     /// Interaction logic for VideosPage.xaml
     /// </summary>
-    public partial class VideosPage : Page
+    public partial class VideosPage : Page, IBarPage
     {
         private readonly object _timerLock = new object();
         private readonly MajorVideoContext _majorVideoContext;
@@ -34,11 +34,14 @@ namespace WPFDemo
         private readonly Image _playButtonImage;
         private readonly Image _pauseButtonImage;
         private double _lastProgress = 0.0d;
+        private Window _window;
+        private IList<ImageButton> _imageButtons;
 
-        public VideosPage(MajorVideoContext majorVideoContext, AppConfig appConfig)
+        public VideosPage(MajorVideoContext majorVideoContext, AppConfig appConfig, Window window)
         {
             _appConfig = appConfig;
             _majorVideoContext = majorVideoContext;
+            _window = window;
             var listViewItemCommand = new ListViewItemCommand(this);
             InitializeComponent();
             VideoPlayer.UnloadedBehavior = MediaState.Close;
@@ -117,6 +120,8 @@ namespace WPFDemo
             }
 
             this.Unloaded += VideosPage_Unloaded;
+
+            BarPageUtility.PrepareBarPage(this, _appConfig);
         }
 
         internal void VideoPlayerControlMethod()
@@ -153,6 +158,33 @@ namespace WPFDemo
 
             _videoControlButton.ToolTip = _played ? _appConfig.VideoPauseToolTip : _appConfig.VideoPlayToolTip;
         }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (_imageButtons == null)
+            {
+                return;
+            }
+
+            foreach (var oneImageButton in _imageButtons)
+            {
+                var images = ButtonImages.GetButtonImages(oneImageButton);
+                if (oneImageButton.IsMouseOver)
+                {
+                    var image = images[1];
+                    oneImageButton.Content = image;
+                }
+                else
+                {
+                    var image = images[0];
+                    oneImageButton.Content = image;
+                }
+            }
+
+
+            base.OnMouseMove(e);
+        }
+
 
         private void VideosPage_Unloaded(object sender, RoutedEventArgs e)
         {
@@ -328,5 +360,64 @@ namespace WPFDemo
                 _videosPage.ChangeCurrentIndex(index);
             }
         }
+
+        private void BarGrid_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                _window.DragMove();
+            }
+        }
+
+        #region interface
+        public Window GetWindow()
+        {
+            return _window;
+        }
+
+        public Viewbox GetHomepageViewBox()
+        {
+            return HomePageButtonViewBox;
+        }
+
+        public Viewbox GetMinimumViewBox()
+        {
+            return MinimizeButtonViewBox;
+        }
+
+        public Viewbox GetCloseViewBox()
+        {
+            return CloseButtonViewBox;
+        }
+
+        public Grid GetBarGrid()
+        {
+            return BarGrid;
+        }
+
+        public Viewbox GetTitleViewBox()
+        {
+            return TitleViewBox;
+        }
+
+        public NavigationService GetNavigationService()
+        {
+            return NavigationService;
+        }
+
+        public void SetBarButtons(IList<ImageButton> imageButtons)
+        {
+            if (imageButtons == null)
+            {
+                return;
+            }
+
+            if (_imageButtons == null)
+            {
+                _imageButtons = imageButtons;
+            }
+        }
+
+        #endregion
     }
 }

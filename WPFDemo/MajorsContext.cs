@@ -87,7 +87,7 @@ namespace WPFDemo
                 var functionImagePath = appConfig.GetMajorOpenFileFunctionImagePath(majorName, oneRequest.Name);
                 functionImagePath = functionImagePath.GetExistPath();
                 var mouseImagePath = AppConfig.GetMouseEnterImagePath(functionImagePath);
-                majorContext.FunctionInfos.Add(oneRequest.Name, new FunctionInfo() { Kind = FunctionKind.OpenFile, FunctionName = oneRequest.Name, ProgramName = oneRequest.ProgramName, FilePath = oneRequest.FileFullName, ImagePath = functionImagePath, MouseEnterImagePath = mouseImagePath });
+                majorContext.FunctionInfos.Add(oneRequest.Name, new FunctionInfo() { Kind = FunctionKind.OpenFile, FunctionName = oneRequest.Name, ProgramName = oneRequest.ProgramName, FilePath = oneRequest.FileFullName, ImagePath = functionImagePath, MouseEnterImagePath = mouseImagePath, WorkDirection = oneRequest.WorkDirection });
             }
 
             return majorContext;

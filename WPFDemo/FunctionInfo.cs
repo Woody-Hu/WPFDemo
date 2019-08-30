@@ -23,6 +23,8 @@ namespace WPFDemo
 
         public string MouseEnterImagePath { get; set; }
 
+        public string WorkDirection { get; set; }
+
         public string GetFileFullPath()
         {
             var currentPath = Environment.CurrentDirectory;

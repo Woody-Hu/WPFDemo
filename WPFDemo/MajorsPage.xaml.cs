@@ -21,54 +21,51 @@ namespace WPFDemo
     /// <summary>
     /// Interaction logic for MajorsPage.xaml
     /// </summary>
-    public partial class MajorsPage : Page
+    public partial class MajorsPage : Page, IBarPage
     {
         private readonly MajorsContext _majorsContext;
+        private readonly Window _window;
         private readonly AppConfig _appConfig;
         private readonly int _countPerRow = 4;
+        private IList<ImageButton> _imageButtons;
 
-        public MajorsPage(MajorsContext majorsContext, AppConfig appConfig)
+        public MajorsPage(MajorsContext majorsContext, AppConfig appConfig, Window window)
         {
             InitializeComponent();
             _majorsContext = majorsContext;
             _appConfig = appConfig;
-
+            _window = window;
             var majorsGrid = this.MajorsGrid;
             PrepareGrid(majorsGrid, this._majorsContext.MajorInfos,true);
             PrepareGrid(this.ToolsGrid, this._majorsContext.ResourceInfos,false);
 
-            GridUtility.SetBackGround(_majorsContext.TopBackgroundImagePath, TopGrid);
-            GridUtility.SetBackGround(_majorsContext.BottomBackgroundImagePath, BottomGrid);
-
-            if (string.IsNullOrWhiteSpace(_majorsContext.AppTitleImagePath))
+            var backgroundImagePath = appConfig.GetAPPBackgroundImagePath();
+            if (!string.IsNullOrWhiteSpace(backgroundImagePath))
             {
-                var textBlock = new TextBlock
-                {
-                    Text = _majorsContext.AppTitle
-                };
-                TitleViewBox.Child = textBlock;
+                GridUtility.SetBackGround(backgroundImagePath, MainGrid);
             }
             else
             {
-                var image = new Image
-                {
-                    Source = new BitmapImage(new Uri(_majorsContext.AppTitleImagePath))
-                };
-                TitleViewBox.Child = image;
+                GridUtility.SetBackGround(_majorsContext.TopBackgroundImagePath, TopGrid);
+                GridUtility.SetBackGround(_majorsContext.BottomBackgroundImagePath, BottomGrid);
             }
+
 
             if (!string.IsNullOrWhiteSpace(_majorsContext.AppTitle))
             {
                 this.WindowTitle = _majorsContext.AppTitle;
                 this.Title = _majorsContext.AppTitle;
             }
+
+            BarPageUtility.PrepareBarPage(this, _appConfig);
+
         }
 
         private void NavigateMajorPageButton_Click(object sender, RoutedEventArgs e)
         {
             var majorContext = (sender as Button)?.Tag as MajorContext;
             var navigationService = this.NavigationService;
-            navigationService?.Navigate(new MajorPage(majorContext, _appConfig));
+            navigationService?.Navigate(new MajorPage(majorContext, _appConfig, _window));
         }
 
         private void OpenFolderButton_Click(object sender, RoutedEventArgs e)
@@ -119,5 +116,90 @@ namespace WPFDemo
                 }
             }
         }
+
+        private void UIElement_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                _window.DragMove();
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (_imageButtons == null)
+            {
+                return;
+            }
+
+            foreach (var oneImageButton in _imageButtons)
+            {
+                var images = ButtonImages.GetButtonImages(oneImageButton);
+                if (oneImageButton.IsMouseOver)
+                {
+                    var image = images[1];
+                    oneImageButton.Content = image;
+                }
+                else
+                {
+                    var image = images[0];
+                    oneImageButton.Content = image;
+                }
+            }
+
+
+            base.OnMouseMove(e);
+        }
+
+        #region interface
+        public Window GetWindow()
+        {
+            return _window;
+        }
+
+        public Viewbox GetHomepageViewBox()
+        {
+            return HomePageButtonViewBox;
+        }
+
+        public Viewbox GetMinimumViewBox()
+        {
+            return MinimizeButtonViewBox;
+        }
+
+        public Viewbox GetCloseViewBox()
+        {
+            return CloseButtonViewBox;
+        }
+
+        public Grid GetBarGrid()
+        {
+            return BarGrid;
+        }
+
+        public Viewbox GetTitleViewBox()
+        {
+            return TitleViewBox;
+        }
+
+        public NavigationService GetNavigationService()
+        {
+            return NavigationService;
+        }
+
+        public void SetBarButtons(IList<ImageButton> imageButtons)
+        {
+            if (imageButtons == null)
+            {
+                return;
+            }
+
+            if (_imageButtons == null)
+            {
+                _imageButtons = imageButtons;
+            }
+        }
+
+        #endregion
     }
 }
