@@ -135,6 +135,11 @@ namespace WPFDemo
             foreach (var oneImageButton in _imageButtons)
             {
                 var images = ButtonImages.GetButtonImages(oneImageButton);
+                if (images == null)
+                {
+                    return;
+                }
+
                 if (oneImageButton.IsMouseOver)
                 {
                     var image = images[1];
