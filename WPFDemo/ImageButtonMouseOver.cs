@@ -33,6 +33,11 @@ namespace WPFDemo
             }
 
             var images = ButtonImages.GetButtonImages(imageButton);
+            if (images == null)
+            {
+                return;
+            }
+
             if ((bool) e.NewValue)
             {
                 var image = images[1];
