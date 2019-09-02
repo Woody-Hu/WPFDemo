@@ -39,7 +39,7 @@ namespace WPFDemo
             PrepareGrid(majorsGrid, this._majorsContext.MajorInfos,true);
             PrepareGrid(this.ToolsGrid, this._majorsContext.ResourceInfos,false);
 
-            var backgroundImagePath = appConfig.GetAPPBackgroundImagePath();
+            var backgroundImagePath = appConfig.GetAppBackgroundImagePath();
             if (!string.IsNullOrWhiteSpace(backgroundImagePath))
             {
                 GridUtility.SetBackGround(backgroundImagePath, MainGrid);

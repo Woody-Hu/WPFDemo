@@ -24,7 +24,7 @@ namespace WPFDemo
 
         private const string TitleBarBackgroundImageName = "Title_Background.jpg";
 
-        private const string APPBackgroundImageName = "App_Background.jpg";
+        private const string AppBackgroundImageName = "App_Background.jpg";
 
         private const string MajorBackgroundImageName = "_Major_Background.jpg";
 
@@ -78,14 +78,18 @@ namespace WPFDemo
 
         public string VideoFunctionDisplayName { get; set; }
 
+        public IList<string> MajorOrder { get; set; } = new List<string>();
+
+        public IList<string> ResourceOrder { get; set; } = new List<string>();
+
         public IList<string> GetMajorNames()
         {
-            return _majorNames.ToList();
+            return OrderMajorNames(_majorNames.ToList());
         }
 
         public IList<string> GetResourceNames()
         {
-            return _resourceFolderNames.ToList();
+            return OrderResourceNames(_resourceFolderNames.ToList());
         }
 
         public string GetVideoPlayImagePath()
@@ -113,9 +117,9 @@ namespace WPFDemo
             return Path.Combine(GetPluginFolderPath(), AppConfig.CloseButtonImageName);
         }
 
-        public string GetAPPBackgroundImagePath()
+        public string GetAppBackgroundImagePath()
         {
-            return Path.Combine(GetPluginFolderPath(), AppConfig.APPBackgroundImageName).GetExistPath();
+            return Path.Combine(GetPluginFolderPath(), AppConfig.AppBackgroundImageName).GetExistPath();
         }
 
         public string GetMajorBackgroundImagePath(string majorName)
@@ -263,6 +267,23 @@ namespace WPFDemo
             var currentPath = Environment.CurrentDirectory;
             var path = Path.Combine(GetPluginFolderPath(), resourceName + ResourceImageSuffixName);
             return path.GetExistPath();
+        }
+
+        public IList<string> OrderMajorNames(IList<string> majors)
+        {
+            return OrderString(majors, MajorOrder);
+        }
+
+        public IList<string> OrderResourceNames(IList<string> resources)
+        {
+            return OrderString(resources, ResourceOrder);
+        }
+
+        private IList<string> OrderString(IList<string> list, IList<string> order)
+        {
+            var index = order.Count;
+            var res = list.OrderBy(k => order.Contains(k) ? order.IndexOf(k) : index++).ToList();
+            return res;
         }
     }
 }
