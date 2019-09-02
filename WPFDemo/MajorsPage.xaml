@@ -21,11 +21,11 @@
             <Viewbox Grid.Column="0" HorizontalAlignment="Left" Name="TitleViewBox">
             </Viewbox>
             <WrapPanel Grid.Column="1" HorizontalAlignment="Right">
-                <Viewbox HorizontalAlignment="Right" Name ="HomePageButtonViewBox" Margin ="5">
+                <Viewbox HorizontalAlignment="Right" Name ="HomePageButtonViewBox">
                 </Viewbox>
-                <Viewbox HorizontalAlignment="Right" Name ="MinimizeButtonViewBox" Margin ="5">
+                <Viewbox HorizontalAlignment="Right" Name ="MinimizeButtonViewBox">
                 </Viewbox>
-                <Viewbox HorizontalAlignment="Right" Name ="CloseButtonViewBox" Margin ="5">
+                <Viewbox HorizontalAlignment="Right" Name ="CloseButtonViewBox">
                 </Viewbox>
             </WrapPanel>
         </Grid>
