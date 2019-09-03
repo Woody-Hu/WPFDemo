@@ -33,35 +33,7 @@ namespace WPFDemo
             _appConfig = appConfig;
             _window = window;
             InitializeComponent();
-            var functionInfos = _majorContext.FunctionInfos;
-            var columnCount = functionInfos.Count;
-            CoreGrid.Rows = 1;
-            CoreGrid.Columns = columnCount;
-            var index = 0;
-            foreach (var oneFunctionInfo in functionInfos)
-            {
-                var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key, oneFunctionInfo.Value.MouseEnterImagePath);
-                if (oneFunctionInfo.Value.Kind == FunctionKind.Video)
-                {
-                    var majorVideoContext = GetMajorVideoContext();
-
-                    button.Tag = majorVideoContext;
-                    button.Click += NavigateVideoPageButton_Click;
-                }
-                else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
-                {
-                    button.Tag = oneFunctionInfo.Value;
-                    button.Click += OpenFileButton_Click; ;
-                }
-
-                viewBox.Child = button;
-                CoreGrid.Children.Add(viewBox);
-                viewBox.SetValue(Grid.RowProperty, 0);
-                viewBox.SetValue(Grid.ColumnProperty, index);
-                index++;
-            }
-
+            PrepareGrid();
             PrepareGrid(this.ToolsGrid, this._majorContext.ResourceInfos);
             var majorBackgroundImagePath = appConfig.GetMajorBackgroundImagePath(_majorContext.MajorName);
             if (!string.IsNullOrWhiteSpace(majorBackgroundImagePath))
@@ -85,6 +57,69 @@ namespace WPFDemo
             }
 
             BarPageUtility.PrepareBarPage(this, _appConfig);
+        }
+
+        private void PrepareGrid()
+        {
+            var functionInfos = _majorContext.FunctionInfos;
+            var rowCount = functionInfos.Count / _countPerRow;
+            if (functionInfos.Count % _countPerRow != 0)
+            {
+                rowCount++;
+            }
+
+            var columnCount = 2 * _countPerRow;
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                CoreGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)});
+            }
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                CoreGrid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
+            }
+
+            var useRowIndex = 0;
+            var useColumnIndex = 0;
+            if (rowCount == 1)
+            {
+                useColumnIndex = _countPerRow - functionInfos.Count;
+            }
+
+            var index = 0;
+            foreach (var oneFunctionInfo in functionInfos)
+            {
+                var viewBox = new Viewbox();
+                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key,
+                    oneFunctionInfo.Value.MouseEnterImagePath);
+                if (oneFunctionInfo.Value.Kind == FunctionKind.Video)
+                {
+                    var majorVideoContext = GetMajorVideoContext();
+
+                    button.Tag = majorVideoContext;
+                    button.Click += NavigateVideoPageButton_Click;
+                }
+                else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
+                {
+                    button.Tag = oneFunctionInfo.Value;
+                    button.Click += OpenFileButton_Click;
+                    ;
+                }
+
+                viewBox.Child = button;
+                CoreGrid.Children.Add(viewBox);
+                viewBox.SetValue(Grid.RowProperty, useRowIndex);
+                viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
+                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
+
+                useColumnIndex = useColumnIndex + 2;
+                if (useColumnIndex >= columnCount)
+                {
+                    useRowIndex++;
+                    useColumnIndex = 0;
+                }
+            }
         }
 
         private MajorVideoContext GetMajorVideoContext()
@@ -140,18 +175,33 @@ namespace WPFDemo
             return listVideoFiles;
         }
 
-        private void PrepareGrid(System.Windows.Controls.Primitives.UniformGrid majorsGrid, IDictionary<string, FolderInfo> infos)
+        private void PrepareGrid(System.Windows.Controls.Grid grid, IDictionary<string, FolderInfo> infos)
         {
             var rowCount = infos.Count / _countPerRow;
             if (infos.Count % _countPerRow != 0)
             {
                 rowCount++;
             }
-            var columnCount = rowCount == 1 ? infos.Count % _countPerRow : _countPerRow;
-            majorsGrid.Rows = rowCount;
-            majorsGrid.Columns = columnCount;
+
+            var columnCount = 2 * _countPerRow;
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            }
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            }
+
             var useRowIndex = 0;
             var useColumnIndex = 0;
+            if (rowCount == 1)
+            {
+                useColumnIndex = _countPerRow - infos.Count;
+            }
+
             foreach (var oneInfoPair in infos)
             {
                 var viewBox = new Viewbox();
@@ -159,10 +209,12 @@ namespace WPFDemo
                 button.Tag = oneInfoPair.Value.Path;
                 button.Click += OpenFolderButton_Click;
                 viewBox.Child = button;
-                majorsGrid.Children.Add(viewBox);
+                grid.Children.Add(viewBox);
                 viewBox.SetValue(Grid.RowProperty, useRowIndex);
                 viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
-                useColumnIndex++;
+                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
+
+                useColumnIndex = useColumnIndex + 2;
                 if (useColumnIndex >= columnCount)
                 {
                     useRowIndex++;

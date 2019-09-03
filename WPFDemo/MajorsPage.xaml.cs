@@ -74,18 +74,33 @@ namespace WPFDemo
             if (path != null) FolderUtility.ExploreFolder(path.ToString());
         }
 
-        private void PrepareGrid(System.Windows.Controls.Primitives.UniformGrid majorsGrid, IDictionary<string, FolderInfo> infos, bool isMajorRequest)
+        private void PrepareGrid(System.Windows.Controls.Grid grid, IDictionary<string, FolderInfo> infos, bool isMajorRequest)
         {
             var rowCount = infos.Count / _countPerRow;
             if (infos.Count % _countPerRow != 0)
             {
                 rowCount++;
             }
-            var columnCount = rowCount == 1 ? infos.Count % _countPerRow : _countPerRow;
-            majorsGrid.Rows = rowCount;
-            majorsGrid.Columns = columnCount;
+
+            var columnCount = 2 * _countPerRow;
+
+            for (int i = 0; i < rowCount; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition(){Height = new GridLength(1, GridUnitType.Star)});
+            }
+
+            for (int i = 0; i < columnCount; i++)
+            {
+                grid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star) });
+            }
+
             var useRowIndex = 0;
             var useColumnIndex = 0;
+            if (rowCount == 1)
+            {
+                useColumnIndex = _countPerRow - infos.Count;
+            }
+
             foreach (var oneInfoPair in infos)
             {
                 var viewBox = new Viewbox();
@@ -104,11 +119,12 @@ namespace WPFDemo
                 }
 
                 viewBox.Child = button;
-                majorsGrid.Children.Add(viewBox);
+                grid.Children.Add(viewBox);
                 viewBox.SetValue(Grid.RowProperty, useRowIndex);
                 viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
+                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
 
-                useColumnIndex++;
+                useColumnIndex = useColumnIndex +2;
                 if (useColumnIndex >= columnCount)
                 {
                     useRowIndex++;

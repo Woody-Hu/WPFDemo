@@ -40,7 +40,7 @@
                     <ColumnDefinition Width="10*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <UniformGrid Name ="MajorsGrid" Grid.Column="1"></UniformGrid>
+                <Grid Name ="MajorsGrid" Grid.Column="1"></Grid>
             </Grid>
             <Grid Name="BottomGrid" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -53,8 +53,8 @@
                     <RowDefinition Height="3*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <UniformGrid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
-                </UniformGrid>
+                <Grid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

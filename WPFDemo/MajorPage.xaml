@@ -46,7 +46,7 @@
                         <ColumnDefinition Width="10*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
-                    <UniformGrid Name="CoreGrid" Grid.Column="1"></UniformGrid>
+                    <Grid Name="CoreGrid" Grid.Column="1"></Grid>
                 </Grid>
             </Grid>
             <Grid Name="BottomGrid" Grid.Row="1">
@@ -60,8 +60,8 @@
                     <RowDefinition Height="3*"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <UniformGrid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
-                </UniformGrid>
+                <Grid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
