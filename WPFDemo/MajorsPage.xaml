@@ -45,9 +45,9 @@
                     </Grid.RowDefinitions>
                     <Grid Grid.Row ="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="10*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="168*"></ColumnDefinition>
+                            <ColumnDefinition Width="664*"></ColumnDefinition>
+                            <ColumnDefinition Width="168*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
                         <Grid Name ="MajorsGrid" Grid.Column="1"></Grid>
                     </Grid>
@@ -55,9 +55,9 @@
             </Grid>
             <Grid Name="BottomGrid" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="10*"></ColumnDefinition>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="215*"></ColumnDefinition>
+                    <ColumnDefinition Width="570*"></ColumnDefinition>
+                    <ColumnDefinition Width="215*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
