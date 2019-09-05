@@ -28,6 +28,10 @@ namespace WPFDemo
 
         private const string TitleBarBackgroundImageName = "Title_Background.jpg";
 
+        private const string VideoFilesListViewBackgroundImageName = "VideoFilesListView_Background.jpg";
+
+        private const string VideoBottomGridBackgroundImageName = "VideoBottomGrid_Background.jpg";
+
         private const string AppBackgroundImageName = "App_Background.jpg";
 
         private const string MajorBackgroundImageName = "_Major_Background.jpg";
@@ -112,6 +116,16 @@ namespace WPFDemo
         public string GetVideoPauseImagePath()
         {
             return Path.Combine(GetPluginFolderPath(), AppConfig.VideoPauseImageName);
+        }
+
+        public string GetVideoFilesListViewBackgroundImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.VideoFilesListViewBackgroundImageName).GetExistPath();
+        }
+
+        public string GetVideoBottomGridBackgroundImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.VideoBottomGridBackgroundImageName).GetExistPath();
         }
 
         public string GetHomeButtonImagePath()

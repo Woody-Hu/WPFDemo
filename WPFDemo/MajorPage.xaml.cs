@@ -87,7 +87,6 @@ namespace WPFDemo
                 useColumnIndex = _countPerRow - functionInfos.Count;
             }
 
-            var index = 0;
             foreach (var oneFunctionInfo in functionInfos)
             {
                 var viewBox = new Viewbox();

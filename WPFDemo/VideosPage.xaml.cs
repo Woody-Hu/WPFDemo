@@ -121,6 +121,28 @@ namespace WPFDemo
 
             this.Unloaded += VideosPage_Unloaded;
 
+            var videoFilesListViewBackgroundImagePath = _appConfig.GetVideoFilesListViewBackgroundImagePath();
+            if (!string.IsNullOrWhiteSpace(videoFilesListViewBackgroundImagePath))
+            {
+                var image = new Image
+                {
+                    Source = new BitmapImage(new Uri(videoFilesListViewBackgroundImagePath))
+                };
+
+                VideoFilesListView.Background = new ImageBrush(image.Source);
+            }
+
+            var videoBottomGridBackgroundImagePath = _appConfig.GetVideoBottomGridBackgroundImagePath();
+            if (!string.IsNullOrWhiteSpace(videoBottomGridBackgroundImagePath))
+            {
+                var image = new Image
+                {
+                    Source = new BitmapImage(new Uri(videoBottomGridBackgroundImagePath))
+                };
+
+                BottomGrid.Background = new ImageBrush(image.Source);
+            }
+
             BarPageUtility.PrepareBarPage(this, _appConfig);
         }
 
