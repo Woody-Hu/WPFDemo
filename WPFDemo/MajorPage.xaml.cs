@@ -46,7 +46,7 @@ namespace WPFDemo
                 GridUtility.SetBackGround(_majorContext.BottomBackgroundImagePath, BottomGrid);
             }
 
-            if (!string.IsNullOrWhiteSpace(_majorContext.MajorName))
+            if (!string.IsNullOrWhiteSpace(_majorContext.MajorName) && appConfig.ShowMajorNameAtMajorPage)
             {
                 Title = _majorContext.MajorName;
                 var textBlock = new TextBlock
@@ -99,6 +99,10 @@ namespace WPFDemo
 
                     button.Tag = majorVideoContext;
                     button.Click += NavigateVideoPageButton_Click;
+                    if (!_appConfig.ShowVideoButtonToolTip)
+                    {
+                        button.ToolTip = null;
+                    }
                 }
                 else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
                 {
@@ -295,6 +299,11 @@ namespace WPFDemo
         public Viewbox GetMinimumViewBox()
         {
             return MinimizeButtonViewBox;
+        }
+
+        public Viewbox GetMaximumAndRestoreViewBox()
+        {
+            return MaximumRestoreButtonViewBox;
         }
 
         public Viewbox GetCloseViewBox()

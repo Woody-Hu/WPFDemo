@@ -25,6 +25,8 @@
                 </Viewbox>
                 <Viewbox HorizontalAlignment="Right" Name ="MinimizeButtonViewBox">
                 </Viewbox>
+                <Viewbox HorizontalAlignment="Right" Name ="MaximumRestoreButtonViewBox">
+                </Viewbox>
                 <Viewbox HorizontalAlignment="Right" Name ="CloseButtonViewBox">
                 </Viewbox>
             </WrapPanel>

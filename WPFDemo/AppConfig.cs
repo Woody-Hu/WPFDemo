@@ -18,6 +18,10 @@ namespace WPFDemo
 
         private const string MinimizeButtonImageName = "Minimize.png";
 
+        private const string MaximumButtonImageName = "Maximum.png";
+
+        private const string RestoreButtonImageName = "Restore.png";
+
         private const string CloseButtonImageName = "Close.png";
 
         private const string AppTitleImageName = "App_Title.png";
@@ -70,6 +74,10 @@ namespace WPFDemo
 
         public string MinimumToolTip { get; set; } = "Minimum";
 
+        public string MaximumToolTip { get; set; } = "Maximum";
+
+        public string RestoreToolTip { get; set; } = "Restore";
+
         public string CloseToolTip { get; set; } = "Close";
 
         public IList<string> VideoFormats { get; set; } = new List<string>();
@@ -77,6 +85,10 @@ namespace WPFDemo
         public string VideoFolderName { get; set; }
 
         public string VideoFunctionDisplayName { get; set; }
+
+        public bool ShowMajorNameAtMajorPage { get; set; } = false;
+
+        public bool ShowVideoButtonToolTip { get; set; } = false;
 
         public IList<string> MajorOrder { get; set; } = new List<string>();
 
@@ -110,6 +122,16 @@ namespace WPFDemo
         public string GetMinimizeButtonImagePath()
         {
             return Path.Combine(GetPluginFolderPath(), AppConfig.MinimizeButtonImageName);
+        }
+
+        public string GetMaximumButtonImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.MaximumButtonImageName);
+        }
+
+        public string GetRestoreButtonImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), AppConfig.RestoreButtonImageName);
         }
 
         public string GetCloseButtonImagePath()

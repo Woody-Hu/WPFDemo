@@ -49,6 +49,28 @@ namespace WPFDemo
             minimizeButton.Click+= delegate(object sender, RoutedEventArgs args){ barPage.GetWindow().WindowState = WindowState.Minimized;  };
             barPage.GetMinimumViewBox().Child = minimizeButton;
 
+            imagePath = appConfig.GetMaximumButtonImagePath();
+            imagePath = imagePath.GetExistPath();
+            content = appConfig.MaximumToolTip;
+            var maximumButton = CreateButton(imagePath, content);
+
+            imagePath = appConfig.GetRestoreButtonImagePath();
+            imagePath = imagePath.GetExistPath();
+            content = appConfig.RestoreToolTip;
+            var restoreButton = CreateButton(imagePath, content);
+
+            maximumButton.Click += delegate (object sender, RoutedEventArgs args) { barPage.GetWindow().WindowState = WindowState.Maximized;
+                barPage.GetMaximumAndRestoreViewBox().Child = restoreButton;
+            };
+            restoreButton.Click += delegate(object sender, RoutedEventArgs args)
+            {
+                barPage.GetWindow().WindowState = WindowState.Normal;
+                barPage.GetMaximumAndRestoreViewBox().Child = maximumButton;
+            };
+
+            barPage.GetMaximumAndRestoreViewBox().Child = maximumButton;
+
+
             if (string.IsNullOrWhiteSpace(appConfig.GetAppTitleImagePath()))
             {
                 var textBlock = new TextBlock
@@ -91,6 +113,16 @@ namespace WPFDemo
             if (minimizeButton is ImageButton)
             {
                 list.Add(minimizeButton as ImageButton);
+            }
+
+            if (maximumButton is ImageButton)
+            {
+                list.Add(maximumButton as ImageButton);
+            }
+
+            if (restoreButton is ImageButton)
+            {
+                list.Add(restoreButton as ImageButton);
             }
 
             if (list.Count == 0)

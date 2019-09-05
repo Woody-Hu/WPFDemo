@@ -17,6 +17,8 @@ namespace WPFDemo
 
         Viewbox GetMinimumViewBox();
 
+        Viewbox GetMaximumAndRestoreViewBox();
+
         Viewbox GetCloseViewBox();
 
         Grid GetBarGrid();

@@ -188,6 +188,11 @@ namespace WPFDemo
             return MinimizeButtonViewBox;
         }
 
+        public Viewbox GetMaximumAndRestoreViewBox()
+        {
+            return MaximumRestoreButtonViewBox;
+        }
+
         public Viewbox GetCloseViewBox()
         {
             return CloseButtonViewBox;
