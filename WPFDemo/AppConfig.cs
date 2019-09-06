@@ -14,6 +14,14 @@ namespace WPFDemo
 
         private const string VideoPauseImageName = "VideoPause.png";
 
+        private const string SelectLastVideoImageName = "SelectLastVideo.png";
+
+        private const string SelectNextVideoImageName = "SelectNextVideo.png";
+
+        private const string ExpandVideoListImageName = "ExpandVideoList.png";
+
+        private const string FoldVideoListImageName = "FoldVideoList.png";
+
         private const string HomeButtonImageName = "Home.png";
 
         private const string MinimizeButtonImageName = "Minimize.png";
@@ -74,6 +82,14 @@ namespace WPFDemo
 
         public string VideoPauseToolTip { get; set; } = "Pause";
 
+        public string SelectLastVideoToolTip { get; set; } = "Last";
+
+        public string SelectNextVideoToolTip { get; set; } = "Next";
+
+        public string ExpandVideoListToolTip { get; set; } = "Expend";
+
+        public string FoldVideoListToolTip { get; set; } = "Fold";
+
         public string HomePageToolTip { get; set; } = "Homepage";
 
         public string MinimumToolTip { get; set; } = "Minimum";
@@ -116,6 +132,26 @@ namespace WPFDemo
         public string GetVideoPauseImagePath()
         {
             return Path.Combine(GetPluginFolderPath(), AppConfig.VideoPauseImageName);
+        }
+
+        public string GetSelectLastVideoImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), SelectLastVideoImageName).GetExistPath();
+        }
+
+        public string GetSelectNextVideoImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), SelectNextVideoImageName).GetExistPath();
+        }
+
+        public string GetExpandVideoListImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), ExpandVideoListImageName).GetExistPath();
+        }
+
+        public string GetFoldVideoListImagePath()
+        {
+            return Path.Combine(GetPluginFolderPath(), FoldVideoListImageName).GetExistPath();
         }
 
         public string GetVideoFilesListViewBackgroundImagePath()

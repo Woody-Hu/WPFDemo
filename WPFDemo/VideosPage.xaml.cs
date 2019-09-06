@@ -30,11 +30,11 @@ namespace WPFDemo
         private bool _played = false;
         private DispatcherTimer _timer ;
         private int _progressState = 0;
-        private readonly Button _videoControlButton;
-        private readonly Image _playButtonImage;
-        private readonly Image _pauseButtonImage;
+        private Button _videoControlButton;
+        private Image _playButtonImage;
+        private Image _pauseButtonImage;
         private double _lastProgress = 0.0d;
-        private Window _window;
+        private readonly Window _window;
         private IList<ImageButton> _imageButtons;
 
         public VideosPage(MajorVideoContext majorVideoContext, AppConfig appConfig, Window window)
@@ -45,6 +45,9 @@ namespace WPFDemo
             var listViewItemCommand = new ListViewItemCommand(this);
             InitializeComponent();
             VideoPlayer.UnloadedBehavior = MediaState.Close;
+            VideoPlayer.MediaEnded += VideoPlayer_MediaEnded;
+            VideoPlayer.MediaOpened += VideoPlayer_MediaOpened;
+
             foreach (var keyValuePair in _majorVideoContext.ResourceInfos)
             {
                 var viewBox = new Viewbox();
@@ -55,81 +58,13 @@ namespace WPFDemo
                 this.ToolPanel.Children.Add(viewBox);
             }
 
-            if (CanCreateVideoImageButton())
-            {
-                var list = new List<Image>();
-                var pathList = new List<string>() { _majorVideoContext.VideoStartButtonImagePath , _majorVideoContext.VideoStartButtonMouseEnterImagePath, _majorVideoContext.VideoPauseButtonImagePath, _majorVideoContext.VideoPauseButtonMouseEnterImagePath};
-                foreach (var onePath in pathList)
-                {
-                    list.Add(new Image
-                    {
-                        Source = new BitmapImage(new Uri(onePath))
-                    });
-                }
-
-                _videoControlButton = new VideoImageButton(list.ToArray());
-                _videoControlButton.Content = list[0];
-            }
-            else if (CanCreateImageButton())
-            {
-                _playButtonImage = new Image
-                {
-                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoStartButtonImagePath))
-                };
-                _pauseButtonImage = new Image
-                {
-                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoPauseButtonImagePath))
-                };
-
-                _videoControlButton = ButtonUtility.CreateButton(_playButtonImage, "Play", null);
-            }
-            else
-            {
-                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", null, false);
-            }
-
-            _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
-            _videoControlButton.Click += VideoPlayerControl_Click;
-            var buttonViewBox = new Viewbox {Child = _videoControlButton};
-            ButtonGrid.Children.Add(buttonViewBox);
-
-            var fileIndex = 0;
-            foreach (var oneFileName in _majorVideoContext.VideoFileNames)
-            {;
-                var listViewItem = new ListViewItem
-                {
-                    Content = System.IO.Path.GetFileNameWithoutExtension(oneFileName), Tag = fileIndex
-                };
-                ControlDoubleClick.SetCommand(listViewItem, listViewItemCommand);
-                this.VideoFilesListView.Items.Add(listViewItem);
-                fileIndex++;
-            }
-
-            VideoPlayer.MediaEnded += VideoPlayer_MediaEnded;
-            VideoPlayer.MediaOpened += VideoPlayer_MediaOpened;
-            if (_majorVideoContext.VideoFileNames.Count > 0)
-            {
-                this.VideoFilesListView.SelectedIndex = 0;
-                ChangeCurrentIndex(0);
-            }
+            PreparePlayControlButton(appConfig);
+            PrepareListView(listViewItemCommand);
 
             if (!string.IsNullOrWhiteSpace(appConfig.VideoPageTitle) && !string.IsNullOrWhiteSpace(majorVideoContext.MajorName))
             {
                 var title = $"{majorVideoContext.MajorName}.{appConfig.VideoPageTitle}";
                 Title = title;
-            }
-
-            this.Unloaded += VideosPage_Unloaded;
-
-            var videoFilesListViewBackgroundImagePath = _appConfig.GetVideoFilesListViewBackgroundImagePath();
-            if (!string.IsNullOrWhiteSpace(videoFilesListViewBackgroundImagePath))
-            {
-                var image = new Image
-                {
-                    Source = new BitmapImage(new Uri(videoFilesListViewBackgroundImagePath))
-                };
-
-                VideoFilesListView.Background = new ImageBrush(image.Source);
             }
 
             var videoBottomGridBackgroundImagePath = _appConfig.GetVideoBottomGridBackgroundImagePath();
@@ -143,6 +78,7 @@ namespace WPFDemo
                 BottomGrid.Background = new ImageBrush(image.Source);
             }
 
+            this.Unloaded += VideosPage_Unloaded;
             BarPageUtility.PrepareBarPage(this, _appConfig);
         }
 
@@ -212,6 +148,84 @@ namespace WPFDemo
             base.OnMouseMove(e);
         }
 
+        private void PrepareListView(ListViewItemCommand listViewItemCommand)
+        {
+            var fileIndex = 0;
+            foreach (var oneFileName in _majorVideoContext.VideoFileNames)
+            {
+                ;
+                var listViewItem = new ListViewItem
+                {
+                    Content = System.IO.Path.GetFileNameWithoutExtension(oneFileName),
+                    Tag = fileIndex
+                };
+                ControlDoubleClick.SetCommand(listViewItem, listViewItemCommand);
+                this.VideoFilesListView.Items.Add(listViewItem);
+                fileIndex++;
+            }
+
+            if (_majorVideoContext.VideoFileNames.Count > 0)
+            {
+                this.VideoFilesListView.SelectedIndex = 0;
+                ChangeCurrentIndex(0);
+            }
+
+            var videoFilesListViewBackgroundImagePath = _appConfig.GetVideoFilesListViewBackgroundImagePath();
+            if (!string.IsNullOrWhiteSpace(videoFilesListViewBackgroundImagePath))
+            {
+                var image = new Image
+                {
+                    Source = new BitmapImage(new Uri(videoFilesListViewBackgroundImagePath))
+                };
+
+                VideoFilesListView.Background = new ImageBrush(image.Source);
+            }
+        }
+
+        private void PreparePlayControlButton(AppConfig appConfig)
+        {
+            if (CanCreateVideoImageButton())
+            {
+                var list = new List<Image>();
+                var pathList = new List<string>()
+                {
+                    _majorVideoContext.VideoStartButtonImagePath, _majorVideoContext.VideoStartButtonMouseEnterImagePath,
+                    _majorVideoContext.VideoPauseButtonImagePath, _majorVideoContext.VideoPauseButtonMouseEnterImagePath
+                };
+                foreach (var onePath in pathList)
+                {
+                    list.Add(new Image
+                    {
+                        Source = new BitmapImage(new Uri(onePath))
+                    });
+                }
+
+                _videoControlButton = new VideoImageButton(list.ToArray());
+                _videoControlButton.Content = list[0];
+            }
+            else if (CanCreateImageButton())
+            {
+                _playButtonImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoStartButtonImagePath))
+                };
+                _pauseButtonImage = new Image
+                {
+                    Source = new BitmapImage(new Uri(_majorVideoContext.VideoPauseButtonImagePath))
+                };
+
+                _videoControlButton = ButtonUtility.CreateButton(_playButtonImage, "Play", null);
+            }
+            else
+            {
+                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", null, false);
+            }
+
+            _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
+            _videoControlButton.Click += VideoPlayerControl_Click;
+            var buttonViewBox = new Viewbox { Child = _videoControlButton };
+            PlayButtonGrid.Children.Add(buttonViewBox);
+        }
 
         private void VideosPage_Unloaded(object sender, RoutedEventArgs e)
         {

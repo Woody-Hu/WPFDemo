@@ -65,18 +65,27 @@
             <Grid Grid.Row="1" Name ="BottomGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="2*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
                     <ColumnDefinition Width="2*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility ="Disabled"  HorizontalScrollBarVisibility="Auto">
                     <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Name="ToolPanel">
                     </StackPanel>
                 </ScrollViewer>
-                <Grid Grid.Column="2" Name="ButtonGrid">
+                <Grid Grid.Column="2" Name="SelectLastVideoButtonGrid">
                 </Grid>
-                <Grid Grid.Column="4">
+                <Grid Grid.Column="3" Name="PlayButtonGrid">
+                </Grid>
+                <Grid Grid.Column="4" Name="SelectNextVideoButtonGrid">
+                </Grid>
+                <Grid Grid.Column="5" Name="ExpandFoldVideoListButtonGrid">
+                </Grid>
+                <Grid Grid.Column="7">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"></ColumnDefinition>
                         <ColumnDefinition Width="*"></ColumnDefinition>
