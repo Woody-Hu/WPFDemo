@@ -68,7 +68,14 @@ namespace WPFDemo
                 barPage.GetMaximumAndRestoreViewBox().Child = maximumButton;
             };
 
-            barPage.GetMaximumAndRestoreViewBox().Child = maximumButton;
+            if (barPage.GetWindow().WindowState == WindowState.Maximized)
+            {
+                barPage.GetMaximumAndRestoreViewBox().Child = restoreButton;
+            }
+            else
+            {
+                barPage.GetMaximumAndRestoreViewBox().Child = maximumButton;
+            }
 
 
             if (string.IsNullOrWhiteSpace(appConfig.GetAppTitleImagePath()))
@@ -139,7 +146,7 @@ namespace WPFDemo
             Button button;
             if (string.IsNullOrWhiteSpace(imagePath))
             {
-                button = ButtonUtility.CreateButton(null, content, null, false);
+                button = ButtonUtility.CreateButton((Image)null, content, null);
                 button.Width = 10;
                 button.Height = 10;
                 var viewBox = new Viewbox();

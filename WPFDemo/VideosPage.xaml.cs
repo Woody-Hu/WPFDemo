@@ -59,6 +59,7 @@ namespace WPFDemo
             }
 
             PreparePlayControlButton(appConfig);
+            PrepareNoneControlVideoButtons();
             PrepareListView(listViewItemCommand);
 
             if (!string.IsNullOrWhiteSpace(appConfig.VideoPageTitle) && !string.IsNullOrWhiteSpace(majorVideoContext.MajorName))
@@ -117,6 +118,38 @@ namespace WPFDemo
             _videoControlButton.ToolTip = _played ? _appConfig.VideoPauseToolTip : _appConfig.VideoPlayToolTip;
         }
 
+        internal void SelectNextVideo()
+        {
+            if (_currentIndex == -1)
+            {
+                return;
+            }
+
+            var index = _currentIndex + 1;
+            if (index == VideoFilesListView.Items.Count)
+            {
+                index = 0;
+            }
+
+            ChangeCurrentIndex(index);
+        }
+
+        internal void SelectLastVideo()
+        {
+            if (_currentIndex == -1)
+            {
+                return;
+            }
+
+            var index = _currentIndex - 1;
+            if (index == -1)
+            {
+                index = VideoFilesListView.Items.Count - 1;
+            }
+
+            ChangeCurrentIndex(index);
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (_imageButtons == null)
@@ -153,7 +186,6 @@ namespace WPFDemo
             var fileIndex = 0;
             foreach (var oneFileName in _majorVideoContext.VideoFileNames)
             {
-                ;
                 var listViewItem = new ListViewItem
                 {
                     Content = System.IO.Path.GetFileNameWithoutExtension(oneFileName),
@@ -218,7 +250,7 @@ namespace WPFDemo
             }
             else
             {
-                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", null, false);
+                _videoControlButton = ButtonUtility.CreateButton((Image)null, "Play", null);
             }
 
             _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
@@ -373,6 +405,52 @@ namespace WPFDemo
         private bool CanCreateVideoImageButton()
         {
             return !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonMouseEnterImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonMouseEnterImagePath);
+        }
+
+        private void PrepareNoneControlVideoButtons()
+        {
+            var expandFoldeVideoListViewBox = new Viewbox();
+            ExpandFoldVideoListButtonGrid.Children.Add(expandFoldeVideoListViewBox);
+            var selectLastVideoViewBox = new Viewbox();
+            SelectLastVideoButtonGrid.Children.Add(selectLastVideoViewBox);
+            var selectNextVideoViewBox = new Viewbox();
+            SelectNextVideoButtonGrid.Children.Add(selectNextVideoViewBox);
+            var selectLastVideoButton = CreateButton(_appConfig.GetSelectLastVideoImagePath(), _appConfig.SelectLastVideoToolTip);
+            selectLastVideoButton.Click += delegate (object sender, RoutedEventArgs args)
+            {
+                SelectLastVideo();
+            };
+
+            var selectNextVideoButton = CreateButton(_appConfig.GetSelectNextVideoImagePath(), _appConfig.SelectNextVideoToolTip);
+            selectNextVideoButton.Click += delegate (object sender, RoutedEventArgs args)
+            {
+                SelectNextVideo();
+            };
+
+            var expandVideoListButton = CreateButton(_appConfig.GetExpandVideoListImagePath(), _appConfig.ExpandVideoListToolTip);
+            var foldVideoListButton = CreateButton(_appConfig.GetFoldVideoListImagePath(), _appConfig.FoldVideoListToolTip);
+            expandVideoListButton.Click += delegate (object sender, RoutedEventArgs args)
+            {
+                MainGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                expandFoldeVideoListViewBox.Child = foldVideoListButton;
+            };
+
+            foldVideoListButton.Click += delegate (object sender, RoutedEventArgs args)
+            {
+                MainGrid.ColumnDefinitions[0].Width = new GridLength(0, GridUnitType.Star);
+                expandFoldeVideoListViewBox.Child = expandVideoListButton;
+            };
+
+            expandFoldeVideoListViewBox.Child = foldVideoListButton;
+            selectLastVideoViewBox.Child = selectLastVideoButton;
+            selectNextVideoViewBox.Child = selectNextVideoButton;
+        }
+
+        private Button CreateButton(string imagePath, string content)
+        {
+            var imageMovePath = AppConfig.GetMouseEnterImagePath(imagePath);
+            var createdButton = ButtonUtility.CreateButton(imagePath, content, imageMovePath);
+            return createdButton;
         }
 
         private class ListViewItemCommand : ICommand

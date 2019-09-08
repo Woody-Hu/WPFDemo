@@ -26,7 +26,6 @@ namespace WPFDemo
         private readonly MajorsContext _majorsContext;
         private readonly Window _window;
         private readonly AppConfig _appConfig;
-        private readonly int _countPerRow = 4;
         private IList<ImageButton> _imageButtons;
 
         public MajorsPage(MajorsContext majorsContext, AppConfig appConfig, Window window)
@@ -74,41 +73,17 @@ namespace WPFDemo
             if (path != null) FolderUtility.ExploreFolder(path.ToString());
         }
 
-        private void PrepareGrid(System.Windows.Controls.Grid grid, IDictionary<string, FolderInfo> infos, bool isMajorRequest)
+        private void PrepareGrid(Grid grid, IDictionary<string, FolderInfo> infos, bool isMajorRequest)
         {
-            var rowCount = infos.Count / _countPerRow;
-            if (infos.Count % _countPerRow != 0)
-            {
-                rowCount++;
-            }
-
-            var columnCount = 2 * _countPerRow;
-
-            for (int i = 0; i < rowCount; i++)
-            {
-                grid.RowDefinitions.Add(new RowDefinition(){Height = new GridLength(1, GridUnitType.Star)});
-            }
-
-            for (int i = 0; i < columnCount; i++)
-            {
-                grid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star) });
-            }
-
-            var useRowIndex = 0;
-            var useColumnIndex = 0;
-            if (rowCount == 1)
-            {
-                useColumnIndex = _countPerRow - infos.Count;
-            }
+            int columnCount, useRowIndex, useColumnIndex;
+            GridUtility.PrepareBuutonGrid(grid, infos.Count, isMajorRequest, out columnCount, out useRowIndex, out useColumnIndex);
 
             foreach (var oneInfoPair in infos)
             {
-                var viewBox = new Viewbox();
                 var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key, oneInfoPair.Value.MoveEnterImagePath);
                 if (isMajorRequest)
                 {
                     MajorContext majorContext = MajorsContext.PrepareMajorContext(_majorsContext, _appConfig, oneInfoPair);
-
                     button.Tag = majorContext;
                     button.Click += NavigateMajorPageButton_Click;
                 }
@@ -118,18 +93,7 @@ namespace WPFDemo
                     button.Click += OpenFolderButton_Click;
                 }
 
-                viewBox.Child = button;
-                grid.Children.Add(viewBox);
-                viewBox.SetValue(Grid.RowProperty, useRowIndex);
-                viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
-                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
-
-                useColumnIndex = useColumnIndex +2;
-                if (useColumnIndex >= columnCount)
-                {
-                    useRowIndex++;
-                    useColumnIndex = 0;
-                }
+                GridUtility.SetButton(grid, button, isMajorRequest, columnCount, ref useRowIndex, ref useColumnIndex);
             }
         }
 

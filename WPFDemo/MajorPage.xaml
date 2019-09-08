@@ -38,9 +38,9 @@
             </Grid.RowDefinitions>
             <Grid Name="TopGrid" Grid.Row="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="3*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="248*"></RowDefinition>
+                    <RowDefinition Height="248*"></RowDefinition>
+                    <RowDefinition Height="112*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Viewbox Name="PageTitleViewBox" Grid.Row="0"></Viewbox>
                 <Grid Grid.Row="1">
@@ -59,9 +59,9 @@
                     <ColumnDefinition Width="215*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="5*"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="27*"></RowDefinition>
+                    <RowDefinition Height="236*"></RowDefinition>
+                    <RowDefinition Height="119*"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Name ="ToolsGrid" Grid.Column="1" Grid.Row="1" >
                 </Grid>

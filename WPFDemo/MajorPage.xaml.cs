@@ -23,7 +23,6 @@ namespace WPFDemo
     {
         private readonly MajorContext _majorContext;
         private readonly AppConfig _appConfig;
-        private readonly int _countPerRow = 4;
         private readonly Window _window;
         private IList<ImageButton> _imageButtons;
 
@@ -59,173 +58,6 @@ namespace WPFDemo
             BarPageUtility.PrepareBarPage(this, _appConfig);
         }
 
-        private void PrepareGrid()
-        {
-            var functionInfos = _majorContext.FunctionInfos;
-            var rowCount = functionInfos.Count / _countPerRow;
-            if (functionInfos.Count % _countPerRow != 0)
-            {
-                rowCount++;
-            }
-
-            var columnCount = 2 * _countPerRow;
-
-            for (int i = 0; i < rowCount; i++)
-            {
-                CoreGrid.RowDefinitions.Add(new RowDefinition() {Height = new GridLength(1, GridUnitType.Star)});
-            }
-
-            for (int i = 0; i < columnCount; i++)
-            {
-                CoreGrid.ColumnDefinitions.Add(new ColumnDefinition() {Width = new GridLength(1, GridUnitType.Star)});
-            }
-
-            var useRowIndex = 0;
-            var useColumnIndex = 0;
-            if (rowCount == 1)
-            {
-                useColumnIndex = _countPerRow - functionInfos.Count;
-            }
-
-            foreach (var oneFunctionInfo in functionInfos)
-            {
-                var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key,
-                    oneFunctionInfo.Value.MouseEnterImagePath);
-                if (oneFunctionInfo.Value.Kind == FunctionKind.Video)
-                {
-                    var majorVideoContext = GetMajorVideoContext();
-
-                    button.Tag = majorVideoContext;
-                    button.Click += NavigateVideoPageButton_Click;
-                    if (!_appConfig.ShowVideoButtonToolTip)
-                    {
-                        button.ToolTip = null;
-                    }
-                }
-                else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
-                {
-                    button.Tag = oneFunctionInfo.Value;
-                    button.Click += OpenFileButton_Click;
-                    ;
-                }
-
-                viewBox.Child = button;
-                CoreGrid.Children.Add(viewBox);
-                viewBox.SetValue(Grid.RowProperty, useRowIndex);
-                viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
-                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
-
-                useColumnIndex = useColumnIndex + 2;
-                if (useColumnIndex >= columnCount)
-                {
-                    useRowIndex++;
-                    useColumnIndex = 0;
-                }
-            }
-        }
-
-        private MajorVideoContext GetMajorVideoContext()
-        {
-            var majorVideoContext = new MajorVideoContext
-            {
-                VideoFileNames = GetVideoFileNames(),
-                ResourceInfos = _majorContext.ResourceInfos
-            };
-
-            var playImagePath = _appConfig.GetVideoPlayImagePath();
-            var pauseImagePath = _appConfig.GetVideoPauseImagePath();
-            playImagePath = File.Exists(playImagePath) ? playImagePath : string.Empty;
-            pauseImagePath = File.Exists(pauseImagePath) ? pauseImagePath : string.Empty;
-            majorVideoContext.VideoStartButtonImagePath = playImagePath;
-            majorVideoContext.VideoStartButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(playImagePath);
-            majorVideoContext.VideoPauseButtonImagePath = pauseImagePath;
-            majorVideoContext.VideoPauseButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(pauseImagePath);
-            majorVideoContext.MajorName = _majorContext.MajorName;
-            return majorVideoContext;
-        }
-
-        private IList<string> GetVideoFileNames()
-        {
-            var videoFolderPath = _majorContext.FunctionInfos.FirstOrDefault(k=>k.Value.Kind == FunctionKind.Video).Value?.VideosPath;
-            if (videoFolderPath == null)
-            {
-                return new List<string>();
-            }
-
-            if (!Directory.Exists(videoFolderPath))
-            {
-                return new List<string>();
-            }
-
-            var files = Directory.GetFiles(videoFolderPath);
-            var listVideoFiles = new List<string>();
-            var set = new HashSet<string>();
-            foreach (var oneFormat in _appConfig.VideoFormats)
-            {
-                set.Add(oneFormat.ToLower());
-            }
-
-            foreach (var oneFile in files)
-            {
-                var extension = System.IO.Path.GetExtension(oneFile).ToLower().TrimStart('.');
-                if (set.Contains(extension))
-                {
-                    listVideoFiles.Add(oneFile);
-                }
-            }
-
-            return listVideoFiles;
-        }
-
-        private void PrepareGrid(System.Windows.Controls.Grid grid, IDictionary<string, FolderInfo> infos)
-        {
-            var rowCount = infos.Count / _countPerRow;
-            if (infos.Count % _countPerRow != 0)
-            {
-                rowCount++;
-            }
-
-            var columnCount = 2 * _countPerRow;
-
-            for (int i = 0; i < rowCount; i++)
-            {
-                grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            }
-
-            for (int i = 0; i < columnCount; i++)
-            {
-                grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
-            }
-
-            var useRowIndex = 0;
-            var useColumnIndex = 0;
-            if (rowCount == 1)
-            {
-                useColumnIndex = _countPerRow - infos.Count;
-            }
-
-            foreach (var oneInfoPair in infos)
-            {
-                var viewBox = new Viewbox();
-                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key, oneInfoPair.Value.MoveEnterImagePath);
-                button.Tag = oneInfoPair.Value.Path;
-                button.Click += OpenFolderButton_Click;
-                viewBox.Child = button;
-                grid.Children.Add(viewBox);
-                viewBox.SetValue(Grid.RowProperty, useRowIndex);
-                viewBox.SetValue(Grid.ColumnProperty, useColumnIndex);
-                viewBox.SetValue(Grid.ColumnSpanProperty, 2);
-
-                useColumnIndex = useColumnIndex + 2;
-                if (useColumnIndex >= columnCount)
-                {
-                    useRowIndex++;
-                    useColumnIndex = 0;
-                }
-            }
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
             if (_imageButtons == null)
@@ -257,6 +89,105 @@ namespace WPFDemo
             base.OnMouseMove(e);
         }
 
+        private void PrepareGrid()
+        {
+            var functionInfos = _majorContext.FunctionInfos;
+            int columnCount, useRowIndex, useColumnIndex;
+            GridUtility.PrepareBuutonGrid(CoreGrid, functionInfos.Count, true, out columnCount, out useRowIndex, out useColumnIndex);
+
+            foreach (var oneFunctionInfo in functionInfos)
+            {
+                var button = ButtonUtility.CreateButton(oneFunctionInfo.Value.ImagePath, oneFunctionInfo.Key,
+                    oneFunctionInfo.Value.MouseEnterImagePath);
+                if (oneFunctionInfo.Value.Kind == FunctionKind.Video)
+                {
+                    var majorVideoContext = GetMajorVideoContext();
+
+                    button.Tag = majorVideoContext;
+                    button.Click += NavigateVideoPageButton_Click;
+                    if (!_appConfig.ShowVideoButtonToolTip)
+                    {
+                        button.ToolTip = null;
+                    }
+                }
+                else if (oneFunctionInfo.Value.Kind == FunctionKind.OpenFile)
+                {
+                    button.Tag = oneFunctionInfo.Value;
+                    button.Click += OpenFileButton_Click;
+                    ;
+                }
+
+                GridUtility.SetButton(CoreGrid, button, true, columnCount, ref useRowIndex, ref useColumnIndex);
+            }
+        }
+
+        private MajorVideoContext GetMajorVideoContext()
+        {
+            var majorVideoContext = new MajorVideoContext
+            {
+                VideoFileNames = GetVideoFileNames(),
+                ResourceInfos = _majorContext.ResourceInfos
+            };
+
+            var playImagePath = _appConfig.GetVideoPlayImagePath();
+            var pauseImagePath = _appConfig.GetVideoPauseImagePath();
+            playImagePath = File.Exists(playImagePath) ? playImagePath : string.Empty;
+            pauseImagePath = File.Exists(pauseImagePath) ? pauseImagePath : string.Empty;
+            majorVideoContext.VideoStartButtonImagePath = playImagePath;
+            majorVideoContext.VideoStartButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(playImagePath);
+            majorVideoContext.VideoPauseButtonImagePath = pauseImagePath;
+            majorVideoContext.VideoPauseButtonMouseEnterImagePath = AppConfig.GetMouseEnterImagePath(pauseImagePath);
+            majorVideoContext.MajorName = _majorContext.MajorName;
+            return majorVideoContext;
+        }
+
+        private IList<string> GetVideoFileNames()
+        {
+            var videoFolderPath = _majorContext.FunctionInfos.FirstOrDefault(k => k.Value.Kind == FunctionKind.Video).Value?.VideosPath;
+            if (videoFolderPath == null)
+            {
+                return new List<string>();
+            }
+
+            if (!Directory.Exists(videoFolderPath))
+            {
+                return new List<string>();
+            }
+
+            var files = Directory.GetFiles(videoFolderPath);
+            var listVideoFiles = new List<string>();
+            var set = new HashSet<string>();
+            foreach (var oneFormat in _appConfig.VideoFormats)
+            {
+                set.Add(oneFormat.ToLower());
+            }
+
+            foreach (var oneFile in files)
+            {
+                var extension = System.IO.Path.GetExtension(oneFile).ToLower().TrimStart('.');
+                if (set.Contains(extension))
+                {
+                    listVideoFiles.Add(oneFile);
+                }
+            }
+
+            return listVideoFiles;
+        }
+
+        private void PrepareGrid(Grid grid, IDictionary<string, FolderInfo> infos)
+        {
+            int columnCount, useRowIndex, useColumnIndex;
+            GridUtility.PrepareBuutonGrid(grid, infos.Count, false, out columnCount, out useRowIndex, out useColumnIndex);
+
+            foreach (var oneInfoPair in infos)
+            {
+                var button = ButtonUtility.CreateButton(oneInfoPair.Value.ImagePath, oneInfoPair.Key, oneInfoPair.Value.MoveEnterImagePath);
+                button.Tag = oneInfoPair.Value.Path;
+                button.Click += OpenFolderButton_Click;
+                GridUtility.SetButton(grid, button, false, columnCount, ref useRowIndex, ref useColumnIndex);
+            }
+        }
+
         private void OpenFileButton_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button)?.Tag is FunctionInfo info) FolderUtility.OpenFile(info.ProgramName, info.GetFileFullPath(), info.WorkDirection);
@@ -282,7 +213,6 @@ namespace WPFDemo
                 _window.DragMove();
             }
         }
-
 
         #region interface
         public Window GetWindow()

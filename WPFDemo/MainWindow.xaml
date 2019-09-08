@@ -28,12 +28,18 @@
             </Setter>
         </Style>
         <RoutedUICommand x:Key="VideoPlayButtonCommand"/>
+        <RoutedUICommand x:Key="SelectLastVideoButtonCommand"/>
+        <RoutedUICommand x:Key="SelectNextVideoButtonCommand"/>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="{StaticResource VideoPlayButtonCommand}" Executed="VideoPlayButtonExecuted"/>
+        <CommandBinding Command="{StaticResource SelectLastVideoButtonCommand}" Executed="SelectLastVideoButtonExecuted"/>
+        <CommandBinding Command="{StaticResource SelectNextVideoButtonCommand}" Executed="SelectNextVideoButtonExecuted"/>
     </Window.CommandBindings>
     <Window.InputBindings>
         <KeyBinding Key="Space" Command="{StaticResource VideoPlayButtonCommand}"/>
+        <KeyBinding Key="Left" Command="{StaticResource SelectLastVideoButtonCommand}"/>
+        <KeyBinding Key="Right" Command="{StaticResource SelectNextVideoButtonCommand}"/>
     </Window.InputBindings>
     <WindowChrome.WindowChrome>
         <WindowChrome 

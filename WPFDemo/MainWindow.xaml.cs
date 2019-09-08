@@ -41,7 +41,6 @@ namespace WPFDemo
                 }
             }
 
-
             var majorNames = appConfig.GetMajorNames();
             if (majorNames.Count <= 0)
             {
@@ -193,5 +192,23 @@ namespace WPFDemo
                 page.VideoPlayerControlMethod();
             }
         }
+
+        private void SelectLastVideoButtonExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if ((sender as Window)?.Content is VideosPage page)
+            {
+                page.SelectLastVideo();
+            }
+        }
+
+        private void SelectNextVideoButtonExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            if ((sender as Window)?.Content is VideosPage page)
+            {
+                page.SelectNextVideo();
+            }
+        }
+
+
     }
 }
