@@ -18,8 +18,15 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Viewbox Grid.Column="0" HorizontalAlignment="Left" Name="TitleViewBox">
-            </Viewbox>
+            <Grid Grid.Column="0" HorizontalAlignment="Left">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="8*"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Viewbox Grid.Row="1" HorizontalAlignment="Left" Name="TitleViewBox">
+                </Viewbox>
+            </Grid>
             <WrapPanel Grid.Column="1" HorizontalAlignment="Right">
                 <Viewbox HorizontalAlignment="Right" Name ="HomePageButtonViewBox">
                 </Viewbox>
