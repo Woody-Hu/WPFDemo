@@ -58,8 +58,8 @@ namespace WPFDemo
                 this.ToolPanel.Children.Add(viewBox);
             }
 
-            PreparePlayControlButton(appConfig);
-            PrepareNoneControlVideoButtons();
+            var playButton = PreparePlayControlButton(appConfig);
+            PrepareNoneControlVideoButtons(playButton);
             PrepareListView(listViewItemCommand);
 
             if (!string.IsNullOrWhiteSpace(appConfig.VideoPageTitle) && !string.IsNullOrWhiteSpace(majorVideoContext.MajorName))
@@ -214,7 +214,7 @@ namespace WPFDemo
             }
         }
 
-        private void PreparePlayControlButton(AppConfig appConfig)
+        private Viewbox PreparePlayControlButton(AppConfig appConfig)
         {
             if (CanCreateVideoImageButton())
             {
@@ -256,7 +256,7 @@ namespace WPFDemo
             _videoControlButton.ToolTip = appConfig.VideoPlayToolTip;
             _videoControlButton.Click += VideoPlayerControl_Click;
             var buttonViewBox = new Viewbox { Child = _videoControlButton };
-            PlayButtonGrid.Children.Add(buttonViewBox);
+            return buttonViewBox;
         }
 
         private void VideosPage_Unloaded(object sender, RoutedEventArgs e)
@@ -407,14 +407,11 @@ namespace WPFDemo
             return !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoPauseButtonMouseEnterImagePath) && !string.IsNullOrWhiteSpace(_majorVideoContext.VideoStartButtonMouseEnterImagePath);
         }
 
-        private void PrepareNoneControlVideoButtons()
+        private void PrepareNoneControlVideoButtons(Viewbox playButton)
         {
             var expandFoldeVideoListViewBox = new Viewbox();
-            ExpandFoldVideoListButtonGrid.Children.Add(expandFoldeVideoListViewBox);
             var selectLastVideoViewBox = new Viewbox();
-            SelectLastVideoButtonGrid.Children.Add(selectLastVideoViewBox);
             var selectNextVideoViewBox = new Viewbox();
-            SelectNextVideoButtonGrid.Children.Add(selectNextVideoViewBox);
             var selectLastVideoButton = CreateButton(_appConfig.GetSelectLastVideoImagePath(), _appConfig.SelectLastVideoToolTip);
             selectLastVideoButton.Click += delegate (object sender, RoutedEventArgs args)
             {
@@ -444,6 +441,11 @@ namespace WPFDemo
             expandFoldeVideoListViewBox.Child = foldVideoListButton;
             selectLastVideoViewBox.Child = selectLastVideoButton;
             selectNextVideoViewBox.Child = selectNextVideoButton;
+
+            ButtonPanel.Children.Add(selectLastVideoViewBox);
+            ButtonPanel.Children.Add(playButton);
+            ButtonPanel.Children.Add(selectNextVideoViewBox);
+            ButtonPanel.Children.Add(expandFoldeVideoListViewBox);
         }
 
         private Button CreateButton(string imagePath, string content)
