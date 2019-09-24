@@ -27,6 +27,26 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="local:VideoImageButton">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="local:VideoImageButton">
+                        <Border Name="border" BorderThickness="0" BorderBrush="Black" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property ="local:ImageButtonMouseOver.ImageButtonMouseOver" Value="True"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property ="local:ImageButtonMouseOver.ImageButtonMouseOver" Value="False"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <RoutedUICommand x:Key="VideoPlayButtonCommand"/>
         <RoutedUICommand x:Key="SelectLastVideoButtonCommand"/>
         <RoutedUICommand x:Key="SelectNextVideoButtonCommand"/>

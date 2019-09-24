@@ -10,7 +10,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*"></RowDefinition>
+            <RowDefinition Height="75*"></RowDefinition>
             <RowDefinition Height="1000*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row ="0" Name="BarGrid"  MouseMove="BarGrid_OnMouseMove" Background ="Transparent">
