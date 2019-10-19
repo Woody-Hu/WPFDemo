@@ -102,6 +102,8 @@ namespace WPFDemo
 
         public IList<string> VideoFormats { get; set; } = new List<string>();
 
+        public IList<string> ValidMajorFolderNames = new List<string>();
+
         public string VideoFolderName { get; set; }
 
         public string VideoFunctionDisplayName { get; set; }

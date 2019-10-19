@@ -85,17 +85,31 @@ namespace WPFDemo
                 appConfig.VideoFolderName = "Videos";
             }
 
+            if (appConfig.ValidMajorFolderNames == null)
+            {
+                appConfig.ValidMajorFolderNames = new List<string>();
+            }
+
             CreateFolderIfNotExist(appConfig.GetVideoFolderPath());
             CreateFolderIfNotExist(appConfig.GetPluginFolderPath());
             var currentPath = Environment.CurrentDirectory;
             var allDirectories = Directory.GetDirectories(currentPath);
             var resourcesDirectories = new List<string>();
             var videoFolderInfo = new DirectoryInfo(appConfig.GetVideoFolderPath());
-            foreach (var oneDirectory in videoFolderInfo.GetDirectories())
+            var dynamicMajors = appConfig.ValidMajorFolderNames.Count == 0;
+            foreach (var oneName in appConfig.ValidMajorFolderNames)
             {
-                appConfig.AddMajorName(oneDirectory.Name);
+                appConfig.AddMajorName(oneName);
             }
 
+            if (dynamicMajors)
+            {
+                foreach (var oneDirectory in videoFolderInfo.GetDirectories())
+                {
+                    appConfig.AddMajorName(oneDirectory.Name);
+                }
+            }
+ 
             foreach (var oneDirectory in allDirectories)
             {
                 var directoryInfo = new DirectoryInfo(oneDirectory);
@@ -106,22 +120,30 @@ namespace WPFDemo
 
                 resourcesDirectories.Add(oneDirectory);
                 appConfig.AddResourceName(directoryInfo.Name);
-
-                foreach (var majorDirectory in directoryInfo.GetDirectories())
+                if (dynamicMajors)
                 {
-                    appConfig.AddMajorName(majorDirectory.Name);
+                    foreach (var majorDirectory in directoryInfo.GetDirectories())
+                    {
+                        appConfig.AddMajorName(majorDirectory.Name);
+                    }
                 }
             }
+
+
 
             var allMajors = appConfig.GetMajorNames();
-            foreach (var oneResourcePath in resourcesDirectories)
+            if (dynamicMajors)
             {
-                foreach (var oneMajorName in allMajors)
+                foreach (var oneResourcePath in resourcesDirectories)
                 {
-                    var majorPath = Path.Combine(oneResourcePath, oneMajorName);
-                    CreateFolderIfNotExist(majorPath);
+                    foreach (var oneMajorName in allMajors)
+                    {
+                        var majorPath = Path.Combine(oneResourcePath, oneMajorName);
+                        CreateFolderIfNotExist(majorPath);
+                    }
                 }
             }
+
 
             return appConfig;
         }

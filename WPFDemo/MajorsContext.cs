@@ -43,7 +43,7 @@ namespace WPFDemo
                 var majorPath = Path.Combine(oneInfo.Value.Path, majorName);
                 if (!Directory.Exists(majorPath))
                 {
-                    continue;
+                    majorPath = oneInfo.Value.Path;
                 }
 
                 var majorToolImagePath = appConfig.GetMajorResourceImagePath(majorName, oneInfo.Key);
